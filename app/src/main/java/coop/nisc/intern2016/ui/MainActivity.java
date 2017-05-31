@@ -1,12 +1,14 @@
-package coop.nisc.intern2016;
+package coop.nisc.intern2016.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import coop.nisc.intern2016.importer.AlbumImporter;
+import coop.nisc.intern2016.R;
 import org.json.JSONException;
-
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,11 +16,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Music Store App");
 
         try {
-            AlbumImporter albumImporter = new AlbumImporter(getAssets().open("1.txt"));
-            Log.d("ALBUM_INFO", Arrays.toString(albumImporter.getAlbums(5)));
+            List albumResults = AlbumImporter.getAlbums(AlbumImporter.importAlbum(getAssets().open("1.txt")));
+            Log.d("ALBUM_INFO", albumResults.toString());
         } catch (IOException e) {
             Log.e("IO_EXCEPTION", e.toString());
         } catch (JSONException e) {
