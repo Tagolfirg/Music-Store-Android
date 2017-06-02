@@ -15,16 +15,15 @@ public final class Album {
     private final double price;
     private final boolean explicit;
 
-    public Album(
-            @NonNull String albumName,
-            @NonNull String artistName,
-            @NonNull String albumId,
-            @Nullable String genre,
-            @Nullable String year,
-            @Nullable String country,
-            int trackTotal,
-            double price,
-            boolean explicit) {
+    public Album(@NonNull String albumName,
+                 @NonNull String artistName,
+                 @NonNull String albumId,
+                 @Nullable String genre,
+                 @Nullable String year,
+                 @Nullable String country,
+                 int trackTotal,
+                 double price,
+                 boolean explicit) {
 
         this.albumName = albumName;
         this.artistName = artistName;

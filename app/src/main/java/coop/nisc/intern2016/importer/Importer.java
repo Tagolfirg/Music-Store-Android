@@ -1,17 +1,12 @@
 package coop.nisc.intern2016.importer;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import com.google.common.collect.ImmutableList;
 import coop.nisc.intern2016.model.Album;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 public final class Importer {
 
@@ -33,53 +28,45 @@ public final class Importer {
     private static final String COLLECTION_EXPLICITNESS = "collectionExplicitness";
     private static final String EXPLICIT = "explicit";
 
-    @NonNull
-    public static String importAlbum(@NonNull InputStream inputStream) throws IOException, JSONException {
-
-        String line;
-
-        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        final StringBuilder stringBuilder = new StringBuilder();
-
-        while ((line = bufferedReader.readLine()) != null) {
-            stringBuilder.append(line);
-        }
-
-        bufferedReader.close();
-
-        return stringBuilder.toString();
+    private Importer() {
     }
 
     @NonNull
-    public static ImmutableList<Album> getAlbums(@NonNull String Json) throws IOException, JSONException {
+    public static ImmutableList<Album> importAlbums(@NonNull String Json) {
 
-        JSONObject JsonObject = new JSONObject(Json);
+        final int resultCount;
+        final ImmutableList.Builder<Album> albums = ImmutableList.builder();
 
-        final int resultCount = JsonObject.getInt(RESULT_COUNT);
-        JSONArray songInfo = JsonObject.getJSONArray(RESULTS);
+        try {
+            final JSONObject JsonObject = new JSONObject(Json);
 
-        ArrayList<Album> albums = new ArrayList<>();
+            resultCount = JsonObject.getInt(RESULT_COUNT);
+            final JSONArray songInfo = JsonObject.getJSONArray(RESULTS);
+            JSONObject song;
 
-        for (int index = 0; index < resultCount; index++) {
+            for (int index = 0; index < resultCount; index++) {
 
-            JSONObject song = songInfo.getJSONObject(index);
-            if (song.getString(WRAPPER_TYPE).equals(COLLECTION)) {
-                if (song.getString(COLLECTION_TYPE).equals(ALBUM)) {
+                song = songInfo.getJSONObject(index);
 
-                    albums.add(new Album(
-                            song.getString(COLLECTION_NAME),
-                            song.getString(ARTIST_NAME),
-                            song.getString(COLLECTION_ID),
-                            song.getString(PRIMARY_GENRE_NAME),
-                            song.getString(RELEASE_DATE).substring(0, 4),
-                            song.getString(COUNTRY),
-                            song.getInt(TRACK_COUNT),
-                            song.getDouble(COLLECTION_PRICE),
-                            song.getString(COLLECTION_EXPLICITNESS).equals(EXPLICIT)));
+                if (song.getString(WRAPPER_TYPE).equals(COLLECTION)) {
+                    if (song.getString(COLLECTION_TYPE).equals(ALBUM)) {
+
+                        albums.add(new Album(song.getString(COLLECTION_NAME),
+                                             song.getString(ARTIST_NAME),
+                                             song.getString(COLLECTION_ID),
+                                             song.getString(PRIMARY_GENRE_NAME),
+                                             song.getString(RELEASE_DATE).substring(0, 4),
+                                             song.getString(COUNTRY),
+                                             song.getInt(TRACK_COUNT),
+                                             song.getDouble(COLLECTION_PRICE),
+                                             song.getString(COLLECTION_EXPLICITNESS).equals(EXPLICIT)));
+                    }
                 }
             }
+        } catch (JSONException e) {
+            Log.e("JSON_EXCEPTION", e.toString());
         }
-    return ImmutableList.copyOf(albums);
+        return albums.build();
     }
 
 }
