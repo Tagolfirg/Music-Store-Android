@@ -38,8 +38,8 @@ public final class Importer {
 
         String line;
 
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder stringBuilder = new StringBuilder();
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        final StringBuilder stringBuilder = new StringBuilder();
 
         while ((line = bufferedReader.readLine()) != null) {
             stringBuilder.append(line);
