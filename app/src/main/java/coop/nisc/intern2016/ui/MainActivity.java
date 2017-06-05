@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.importer.Importer;
 import coop.nisc.intern2016.model.Album;
-import coop.nisc.intern2016.util.ParseResource;
+import coop.nisc.intern2016.util.ParseAsset;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,12 +16,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String asset = "album_search_query_result.txt";
-
-        ImmutableList<Album> albumResults = Importer.importAlbums(ParseResource.parseAsset(this, asset));
+        ImmutableList<Album> albumResults = Importer.importAlbums(ParseAsset.parse(this,
+                                                                                   "album_search_query_result.txt"));
 
         Log.d("ALBUM_INFO", albumResults.toString());
-
     }
 
 }

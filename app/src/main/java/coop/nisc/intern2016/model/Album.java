@@ -24,7 +24,6 @@ public final class Album {
                  int trackTotal,
                  double price,
                  boolean explicit) {
-
         this.albumName = albumName;
         this.artistName = artistName;
         this.genre = genre;
@@ -39,7 +38,6 @@ public final class Album {
     @NonNull
     @Override
     public String toString() {
-
         return "\nAlbum: " + albumName + "\t\tArtist: " + artistName +
                 "\nAlbumID: " + albumId + "\t\tGenre: " + genre +
                 "\nYear: " + year + "\t\tCountry: " + country +

@@ -8,19 +8,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class ParseResource {
+public final class ParseAsset {
 
-    private ParseResource() {
+    private ParseAsset() {
     }
 
     @NonNull
-    public static String parseAsset(@NonNull Context context,
-                                    @NonNull String assetName) {
+    public static String parse(@NonNull Context context,
+                               @NonNull String assetName) {
+        final StringBuilder stringBuilder = new StringBuilder();
 
         try {
             String line;
 
-            final StringBuilder stringBuilder = new StringBuilder();
             final BufferedReader bufferedReader =
                     new BufferedReader(new InputStreamReader(context.getAssets().open(assetName)));
 
@@ -30,10 +30,10 @@ public class ParseResource {
 
             bufferedReader.close();
 
-            return stringBuilder.toString();
         } catch (IOException e) {
             Log.e("IO_EXCEPTION", "File \"" + assetName + "\" not found");
-            return "";
         }
+        return stringBuilder.toString();
     }
+
 }

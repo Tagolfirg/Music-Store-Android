@@ -33,7 +33,6 @@ public final class Importer {
 
     @NonNull
     public static ImmutableList<Album> importAlbums(@NonNull String Json) {
-
         final int resultCount;
         final ImmutableList.Builder<Album> albums = ImmutableList.builder();
 
@@ -42,11 +41,10 @@ public final class Importer {
 
             resultCount = JsonObject.getInt(RESULT_COUNT);
             final JSONArray songInfo = JsonObject.getJSONArray(RESULTS);
-            JSONObject song;
 
             for (int index = 0; index < resultCount; index++) {
 
-                song = songInfo.getJSONObject(index);
+                JSONObject song = songInfo.getJSONObject(index);
 
                 if (song.getString(WRAPPER_TYPE).equals(COLLECTION)) {
                     if (song.getString(COLLECTION_TYPE).equals(ALBUM)) {
