@@ -37,10 +37,8 @@ public final class Importer {
         final ImmutableList.Builder<Album> albums = ImmutableList.builder();
 
         try {
-            final JSONObject JsonObject = new JSONObject(Json);
-
-            resultCount = JsonObject.getInt(RESULT_COUNT);
-            final JSONArray songInfo = JsonObject.getJSONArray(RESULTS);
+            final JSONArray songInfo = new JSONObject(Json).getJSONArray(RESULTS);
+            resultCount = songInfo.length();
 
             for (int index = 0; index < resultCount; index++) {
 
