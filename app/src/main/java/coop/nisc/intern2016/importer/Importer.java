@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 public final class Importer {
 
-    private static final String RESULT_COUNT = "resultCount";
     private static final String RESULTS = "results";
     private static final String WRAPPER_TYPE = "wrapperType";
     private static final String COLLECTION = "collection";
@@ -33,20 +32,14 @@ public final class Importer {
 
     @NonNull
     public static ImmutableList<Album> importAlbums(@NonNull String Json) {
-        final int resultCount;
         final ImmutableList.Builder<Album> albums = ImmutableList.builder();
-
         try {
             final JSONArray songInfo = new JSONObject(Json).getJSONArray(RESULTS);
-            resultCount = songInfo.length();
-
+            final int resultCount = songInfo.length();
             for (int index = 0; index < resultCount; index++) {
-
-                JSONObject song = songInfo.getJSONObject(index);
-
+                final JSONObject song = songInfo.getJSONObject(index);
                 if (song.getString(WRAPPER_TYPE).equals(COLLECTION)) {
                     if (song.getString(COLLECTION_TYPE).equals(ALBUM)) {
-
                         albums.add(new Album(song.getString(COLLECTION_NAME),
                                              song.getString(ARTIST_NAME),
                                              song.getString(COLLECTION_ID),

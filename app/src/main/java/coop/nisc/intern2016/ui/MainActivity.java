@@ -15,10 +15,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ImmutableList<Album> albumResults = Importer.importAlbums(ParseAsset.parse(this,
                                                                                    "album_search_query_result.txt"));
-
         Log.d("ALBUM_INFO", albumResults.toString());
     }
 
