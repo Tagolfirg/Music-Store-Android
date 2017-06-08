@@ -10,7 +10,7 @@ import coop.nisc.intern2016.model.Album;
 import coop.nisc.intern2016.model.Track;
 import coop.nisc.intern2016.util.ParseAsset;
 
-public class MainActivity extends AppCompatActivity {
+public final class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

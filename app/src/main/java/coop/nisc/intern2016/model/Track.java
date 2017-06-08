@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-public class Track {
+public final class Track {
 
     private final String artistName;
     private final String collectionName;

@@ -17,8 +17,8 @@ public final class ParseAsset {
     public static String parse(@NonNull Context context,
                                @NonNull String assetName) {
         final StringBuilder stringBuilder = new StringBuilder();
-        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context.getAssets()
-                                                                                                    .open(assetName)))) {
+        try (final BufferedReader bufferedReader =
+                     new BufferedReader(new InputStreamReader(context.getAssets().open(assetName)))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 stringBuilder.append(line);

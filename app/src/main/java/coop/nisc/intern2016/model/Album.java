@@ -1,13 +1,10 @@
 package coop.nisc.intern2016.model;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.math.BigDecimal;
 
 public final class Album {
-
-    private static final String TAG = "Album";
 
     private final String artistName;
     private final String collectionExplicitness;
@@ -50,12 +47,7 @@ public final class Album {
     }
 
     private String formatDateToYear() {
-        try {
-            return releaseDate.substring(0, 4);
-        } catch (IndexOutOfBoundsException e) {
-            Log.e(TAG, "Date is not formatted correctly", e);
-            return "";
-        }
+        return (releaseDate.length() > 4 ? releaseDate.substring(0, 4) : "");
     }
 
     @NonNull
