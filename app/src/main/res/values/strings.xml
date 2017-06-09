@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">intern2016</string>
+    <string name="album_view_activity_name">Albums</string>
 </resources>

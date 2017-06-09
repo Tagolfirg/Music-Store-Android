@@ -1,10 +1,12 @@
 package coop.nisc.intern2016.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
 
-public final class Album {
+public final class Album implements Parcelable {
 
     private final String artistName;
     private final String collectionExplicitness;
@@ -36,6 +38,23 @@ public final class Album {
         this.trackCount = trackCount;
         }
 
+    public Album(@NonNull Parcel parcel) {
+        artistName = parcel.readString();
+        collectionExplicitness = parcel.readString();
+        collectionId = parcel.readString();
+        collectionName = parcel.readString();
+        collectionPrice = BigDecimal.valueOf(parcel.readDouble());
+        country = parcel.readString();
+        primaryGenreName = parcel.readString();
+        releaseDate = parcel.readString();
+        trackCount = parcel.readInt();
+    }
+
+    @NonNull
+    public String getCollectionName() {
+        return collectionName;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -46,6 +65,7 @@ public final class Album {
                 "\n" + getFormattedExplicitness();
     }
 
+    @NonNull
     private String formatDateToYear() {
         return (releaseDate.length() > 4 ? releaseDate.substring(0, 4) : "");
     }
@@ -54,5 +74,41 @@ public final class Album {
     private String getFormattedExplicitness() {
         return ("Explicit".equals(collectionExplicitness) ? "Explicit" : "Not Explicit");
     }
+
+    @NonNull
+    public String getArtistName() {
+        return artistName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest,
+                              int flags) {
+        dest.writeString(artistName);
+        dest.writeString(collectionExplicitness);
+        dest.writeString(collectionId);
+        dest.writeString(collectionName);
+        dest.writeDouble(collectionPrice.doubleValue());
+        dest.writeString(country);
+        dest.writeString(primaryGenreName);
+        dest.writeString(releaseDate);
+        dest.writeInt(trackCount);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @NonNull
+        public Album createFromParcel(@NonNull Parcel in) {
+            return new Album(in);
+        }
+
+        @NonNull
+        public Album[] newArray(int size) {
+            return new Album[size];
+        }
+    };
 
 }

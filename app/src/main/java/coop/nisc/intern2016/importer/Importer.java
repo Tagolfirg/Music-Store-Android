@@ -2,12 +2,13 @@ package coop.nisc.intern2016.importer;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import com.google.common.collect.ImmutableList;
 import coop.nisc.intern2016.model.Album;
 import coop.nisc.intern2016.model.Track;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public final class Importer {
 
@@ -47,8 +48,8 @@ public final class Importer {
     }
 
     @NonNull
-    public static ImmutableList<Album> importAlbums(@NonNull String json) {
-        final ImmutableList.Builder<Album> albums = ImmutableList.builder();
+    public static ArrayList<Album> importAlbums(@NonNull String json) {
+        final ArrayList<Album> albums = new ArrayList<>();
         try {
             final JSONArray albumArray = new JSONObject(json).getJSONArray(RESULTS);
             final int resultCount = albumArray.length();
@@ -71,12 +72,12 @@ public final class Importer {
         } catch (JSONException e) {
             Log.e(TAG, "Error importing albums", e);
         }
-        return albums.build();
+        return albums;
     }
 
     @NonNull
-    public static ImmutableList<Track> importTracks(@NonNull String json) {
-        final ImmutableList.Builder<Track> tracks = ImmutableList.builder();
+    public static ArrayList<Track> importTracks(@NonNull String json) {
+        final ArrayList<Track> tracks = new ArrayList<>();
         try {
             final JSONArray songs = new JSONObject(json).getJSONArray(RESULTS);
             final int resultCount = songs.length();
@@ -100,7 +101,7 @@ public final class Importer {
         } catch (JSONException e) {
             Log.e(TAG, "Error importing tracks", e);
         }
-        return tracks.build();
+        return tracks;
     }
 
 }
