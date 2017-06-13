@@ -18,6 +18,18 @@ public final class Album implements Parcelable {
     private final String releaseDate;
     private final int trackCount;
 
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @NonNull
+        public Album createFromParcel(@NonNull Parcel in) {
+            return new Album(in);
+        }
+
+        @NonNull
+        public Album[] newArray(int size) {
+            return new Album[size];
+        }
+    };
+
     public Album(@NonNull String artistName,
                  @NonNull String collectionExplicitness,
                  @NonNull String collectionId,
@@ -38,7 +50,17 @@ public final class Album implements Parcelable {
         this.trackCount = trackCount;
         }
 
-    public Album(@NonNull Parcel parcel) {
+    @NonNull
+    public String getCollectionName() {
+        return collectionName;
+    }
+
+    @NonNull
+    public String getArtistName() {
+        return artistName;
+    }
+
+    private Album(@NonNull Parcel parcel) {
         artistName = parcel.readString();
         collectionExplicitness = parcel.readString();
         collectionId = parcel.readString();
@@ -48,36 +70,6 @@ public final class Album implements Parcelable {
         primaryGenreName = parcel.readString();
         releaseDate = parcel.readString();
         trackCount = parcel.readInt();
-    }
-
-    @NonNull
-    public String getCollectionName() {
-        return collectionName;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "\nAlbum: " + collectionName + "\t\tArtist: " + artistName +
-                "\nAlbumID: " + collectionId + "\t\tGenre: " + primaryGenreName +
-                "\nYear: " + formatDateToYear() + "\t\tCountry: " + country +
-                "\nTrack Total: " + trackCount + "\t\tPrice: $" + collectionPrice.toString() +
-                "\n" + getFormattedExplicitness();
-    }
-
-    @NonNull
-    private String formatDateToYear() {
-        return (releaseDate.length() > 4 ? releaseDate.substring(0, 4) : "");
-    }
-
-    @NonNull
-    private String getFormattedExplicitness() {
-        return ("Explicit".equals(collectionExplicitness) ? "Explicit" : "Not Explicit");
-    }
-
-    @NonNull
-    public String getArtistName() {
-        return artistName;
     }
 
     @Override
@@ -99,16 +91,24 @@ public final class Album implements Parcelable {
         dest.writeInt(trackCount);
     }
 
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        @NonNull
-        public Album createFromParcel(@NonNull Parcel in) {
-            return new Album(in);
-        }
+    @NonNull
+    @Override
+    public String toString() {
+        return "\nAlbum: " + collectionName + "\t\tArtist: " + artistName +
+                "\nAlbumID: " + collectionId + "\t\tGenre: " + primaryGenreName +
+                "\nYear: " + formatDateToYear() + "\t\tCountry: " + country +
+                "\nTrack Total: " + trackCount + "\t\tPrice: $" + collectionPrice.toString() +
+                "\n" + getFormattedExplicitness();
+    }
 
-        @NonNull
-        public Album[] newArray(int size) {
-            return new Album[size];
-        }
-    };
+    @NonNull
+    private String formatDateToYear() {
+        return (releaseDate.length() > 4 ? releaseDate.substring(0, 4) : "");
+    }
+
+    @NonNull
+    private String getFormattedExplicitness() {
+        return ("Explicit".equals(collectionExplicitness) ? "Explicit" : "Not Explicit");
+    }
 
 }
