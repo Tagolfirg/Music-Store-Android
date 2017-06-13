@@ -20,11 +20,9 @@ public final class Importer {
     private static final String COLLECTION_NAME = "collectionName";
     private static final String PRIMARY_GENRE_NAME = "primaryGenreName";
     private static final String RESULTS = "results";
-    private static final String WRAPPER_TYPE = "wrapperType";
 
     // Album keys
     private static final String ALBUM = "Album";
-    private static final String COLLECTION = "collection";
     private static final String COLLECTION_EXPLICITNESS = "collectionExplicitness";
     private static final String COLLECTION_ID = "collectionId";
     private static final String COLLECTION_PRICE = "collectionPrice";
@@ -38,7 +36,6 @@ public final class Importer {
     private static final String DISC_NUMBER = "discNumber";
     private static final String KIND = "kind";
     private static final String SONG = "song";
-    private static final String TRACK = "track";
     private static final String TRACK_DURATION = "trackTimeMillis";
     private static final String TRACK_EXPLICITNESS = "trackExplicitness";
     private static final String TRACK_NAME = "trackName";
@@ -52,27 +49,26 @@ public final class Importer {
     public static ArrayList<Album> importAlbums(@NonNull String json) {
         final ArrayList<Album> albums = new ArrayList<>();
         try {
-            final JSONArray albumArray = new JSONObject(json).getJSONArray(RESULTS);
-            final int resultCount = albumArray.length();
+            final JSONArray jsonArray = new JSONObject(json).getJSONArray(RESULTS);
+            final int resultCount = jsonArray.length();
             for (int index = 0; index < resultCount; index++) {
-                final JSONObject album = albumArray.getJSONObject(index);
-                if (COLLECTION.equals(album.getString(WRAPPER_TYPE))) {
-                    if (ALBUM.equals(album.getString(COLLECTION_TYPE))) {
-                        albums.add(new Album(album.getString(ARTIST_NAME),
-                                             album.getString(COLLECTION_EXPLICITNESS),
-                                             album.getString(COLLECTION_ID),
-                                             album.getString(COLLECTION_NAME),
-                                             album.getDouble(COLLECTION_PRICE),
-                                             album.getString(COUNTRY),
-                                             album.getString(PRIMARY_GENRE_NAME),
-                                             album.getString(RELEASE_DATE),
-                                             album.getInt(TRACK_COUNT)));
-                    }
+                final JSONObject album = jsonArray.getJSONObject(index);
+                if (ALBUM.equals(album.optString(COLLECTION_TYPE))) {
+                    albums.add(new Album(album.optString(ARTIST_NAME),
+                                         album.getString(COLLECTION_EXPLICITNESS),
+                                         album.optString(COLLECTION_ID),
+                                         album.optString(COLLECTION_NAME),
+                                         album.optInt(COLLECTION_PRICE),
+                                         album.optString(COUNTRY),
+                                         album.optString(PRIMARY_GENRE_NAME),
+                                         album.optString(RELEASE_DATE),
+                                         album.optInt(TRACK_COUNT)));
                 }
             }
         } catch (JSONException e) {
             Log.e(TAG, "Error importing albums", e);
         }
+        Log.d(TAG, String.valueOf(albums.size()));
         return albums;
     }
 
@@ -80,23 +76,21 @@ public final class Importer {
     public static ImmutableList<Track> importTracks(@NonNull String json) {
         ImmutableList.Builder<Track> tracks = ImmutableList.builder();
         try {
-            final JSONArray songs = new JSONObject(json).getJSONArray(RESULTS);
-            final int resultCount = songs.length();
+            final JSONArray jsonArray = new JSONObject(json).getJSONArray(RESULTS);
+            final int resultCount = jsonArray.length();
             for (int index = 0; index < resultCount; index++) {
-                final JSONObject song = songs.getJSONObject(index);
-                if (TRACK.equals(song.getString(WRAPPER_TYPE))) {
-                    if (SONG.equals(song.getString(KIND))) {
-                        tracks.add(new Track(song.getString(ARTIST_NAME),
-                                             song.getString(COLLECTION_NAME),
-                                             song.getInt(DISC_COUNT),
-                                             song.getInt(DISC_NUMBER),
-                                             song.getString(PRIMARY_GENRE_NAME),
-                                             song.getString(TRACK_EXPLICITNESS),
-                                             song.getString(TRACK_NAME),
-                                             song.getInt(TRACK_NUMBER),
-                                             song.getDouble(TRACK_PRICE),
-                                             song.getInt(TRACK_DURATION)));
-                    }
+                final JSONObject song = jsonArray.getJSONObject(index);
+                if (SONG.equals(song.optString(KIND))) {
+                    tracks.add(new Track(song.optString(ARTIST_NAME),
+                                         song.optString(COLLECTION_NAME),
+                                         song.optInt(DISC_COUNT),
+                                         song.optInt(DISC_NUMBER),
+                                         song.optString(PRIMARY_GENRE_NAME),
+                                         song.getString(TRACK_EXPLICITNESS),
+                                         song.optString(TRACK_NAME),
+                                         song.optInt(TRACK_NUMBER),
+                                         song.optDouble(TRACK_PRICE),
+                                         song.getInt(TRACK_DURATION)));
                 }
             }
         } catch (JSONException e) {

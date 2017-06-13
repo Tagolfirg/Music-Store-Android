@@ -8,16 +8,6 @@ import java.math.BigDecimal;
 
 public final class Album implements Parcelable {
 
-    private final String artistName;
-    private final String collectionExplicitness;
-    private final String collectionId;
-    private final String collectionName;
-    private final BigDecimal collectionPrice;
-    private final String country;
-    private final String primaryGenreName;
-    private final String releaseDate;
-    private final int trackCount;
-
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         @NonNull
         public Album createFromParcel(@NonNull Parcel in) {
@@ -29,6 +19,16 @@ public final class Album implements Parcelable {
             return new Album[size];
         }
     };
+
+    private final String artistName;
+    private final String collectionExplicitness;
+    private final String collectionId;
+    private final String collectionName;
+    private final BigDecimal collectionPrice;
+    private final String country;
+    private final String primaryGenreName;
+    private final String releaseDate;
+    private final int trackCount;
 
     public Album(@NonNull String artistName,
                  @NonNull String collectionExplicitness,

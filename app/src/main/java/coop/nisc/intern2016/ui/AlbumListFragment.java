@@ -17,26 +17,32 @@ import java.util.ArrayList;
 public final class AlbumListFragment extends ListFragment {
 
     public static final String TAG = "AlbumListFragment";
+
     private static final String ARGUMENT_ALBUMS = "albumList";
+
+    @Deprecated
+    public AlbumListFragment() {
+    }
 
     @NonNull
     public static AlbumListFragment create(@NonNull ArrayList<Album> albumArrayList) {
         Bundle arguments = new Bundle();
         arguments.putParcelableArrayList(ARGUMENT_ALBUMS, albumArrayList);
+
+        //AlbumListFragment should be created with 'create' method only
         //noinspection deprecation
         AlbumListFragment fragment = new AlbumListFragment();
         fragment.setArguments(arguments);
-        return fragment;
-    }
 
-    @Deprecated
-    public AlbumListFragment() {
+        return fragment;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ArrayList<Album> albums = getArguments().getParcelableArrayList(ARGUMENT_ALBUMS);
+
+        //albums is never null
         //noinspection ConstantConditions
         setListAdapter(new AlbumAdapter(getContext(), albums));
     }
@@ -57,10 +63,10 @@ public final class AlbumListFragment extends ListFragment {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext())
                         .inflate(android.R.layout.two_line_list_item, parent, false);
-                viewHolder = new AlbumAdapter.ViewHolder(convertView);
+                viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {
-                viewHolder = (AlbumAdapter.ViewHolder) convertView.getTag();
+                viewHolder = (ViewHolder) convertView.getTag();
             }
 
             Album album = getItem(position);
