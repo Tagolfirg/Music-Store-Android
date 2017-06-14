@@ -29,7 +29,6 @@ public final class AlbumListFragment extends ListFragment {
         Bundle arguments = new Bundle();
         arguments.putParcelableArrayList(ARGUMENT_ALBUMS, albumArrayList);
 
-        //AlbumListFragment should be created with 'create' method only
         //noinspection deprecation
         AlbumListFragment fragment = new AlbumListFragment();
         fragment.setArguments(arguments);

@@ -58,7 +58,7 @@ public final class Importer {
                                          album.getString(COLLECTION_EXPLICITNESS),
                                          album.optString(COLLECTION_ID),
                                          album.optString(COLLECTION_NAME),
-                                         album.optInt(COLLECTION_PRICE),
+                                         album.optDouble(COLLECTION_PRICE, 0),
                                          album.optString(COUNTRY),
                                          album.optString(PRIMARY_GENRE_NAME),
                                          album.optString(RELEASE_DATE),

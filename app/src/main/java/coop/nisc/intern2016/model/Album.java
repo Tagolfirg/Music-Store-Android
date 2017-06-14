@@ -98,17 +98,12 @@ public final class Album implements Parcelable {
                 "\nAlbumID: " + collectionId + "\t\tGenre: " + primaryGenreName +
                 "\nYear: " + formatDateToYear() + "\t\tCountry: " + country +
                 "\nTrack Total: " + trackCount + "\t\tPrice: $" + collectionPrice.toString() +
-                "\n" + getFormattedExplicitness();
+                "\n" + collectionExplicitness;
     }
 
     @NonNull
     private String formatDateToYear() {
         return (releaseDate.length() > 4 ? releaseDate.substring(0, 4) : "");
-    }
-
-    @NonNull
-    private String getFormattedExplicitness() {
-        return ("Explicit".equals(collectionExplicitness) ? "Explicit" : "Not Explicit");
     }
 
 }
