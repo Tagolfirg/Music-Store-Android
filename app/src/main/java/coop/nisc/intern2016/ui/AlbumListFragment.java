@@ -45,7 +45,6 @@ public final class AlbumListFragment extends ListFragment {
         //albums is never null
         //noinspection ConstantConditions
         setListAdapter(new AlbumAdapter(getContext(), albums));
-        getListView().setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
     }
 
     private final class AlbumAdapter extends ArrayAdapter<Album> {
@@ -62,14 +61,12 @@ public final class AlbumListFragment extends ListFragment {
                             @NonNull ViewGroup parent) {
             final ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext())
-                        .inflate(R.layout.list_item_album, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_album, parent, false);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-
             Album album = getItem(position);
             if (album != null) {
                 viewHolder.collectionName.setText(album.getCollectionName());
@@ -85,10 +82,10 @@ public final class AlbumListFragment extends ListFragment {
             final TextView artistName;
             final TextView releaseYear;
 
-            ViewHolder(@NonNull View convertView) {
-                collectionName = (TextView) convertView.findViewById(R.id.album_title);
-                artistName = (TextView) convertView.findViewById(R.id.artist_name);
-                releaseYear = (TextView) convertView.findViewById(R.id.release_year);
+            ViewHolder(@NonNull View view) {
+                collectionName = (TextView) view.findViewById(R.id.album_title);
+                artistName = (TextView) view.findViewById(R.id.artist_name);
+                releaseYear = (TextView) view.findViewById(R.id.release_year);
             }
 
         }

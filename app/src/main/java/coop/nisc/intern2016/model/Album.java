@@ -99,11 +99,11 @@ public final class Album implements Parcelable {
     @NonNull
     @Override
     public String toString() {
-        return "\nAlbum: " + collectionName + "\t\tArtist: " + artistName +
-                "\nAlbumID: " + collectionId + "\t\tGenre: " + primaryGenreName +
-                "\nYear: " + getReleaseYear() + "\t\tCountry: " + country +
-                "\nTrack Total: " + trackCount + "\t\tPrice: $" + collectionPrice.toString() +
-                "\n" + collectionExplicitness;
+        return "\nAlbum: " + collectionName + "\t\tArtist: " + artistName
+                + "\nAlbumID: " + collectionId + "\t\tGenre: " + primaryGenreName
+                + "\nYear: " + getReleaseYear() + "\t\tCountry: " + country
+                + "\nTrack Total: " + trackCount + "\t\tPrice: $" + collectionPrice.toString()
+                + "\n" + collectionExplicitness;
     }
 
 }

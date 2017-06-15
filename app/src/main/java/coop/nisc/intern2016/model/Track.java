@@ -46,11 +46,11 @@ public final class Track {
     @NonNull
     @Override
     public String toString() {
-        return "\nTrack Title: " + trackName + "\t\tArtist: " + artistName +
-                "\nAlbum Title: " + collectionName + "\t\tGenre: " + primaryGenreName +
-                "\nTrack Number: " + trackNumber + "\t\tDisc Number: " + discNumber + "/" + discCount +
-                "\nTime: " + getFormattedTrackDuration() + "\t\tPrice: $" + trackPrice.toString() +
-                "\n" + getFormattedExplicitness();
+        return "\nTrack Title: " + trackName + "\t\tArtist: " + artistName
+                + "\nAlbum Title: " + collectionName + "\t\tGenre: " + primaryGenreName
+                + "\nTrack Number: " + trackNumber + "\t\tDisc Number: " + discNumber + "/" + discCount
+                + "\nTime: " + getFormattedTrackDuration() + "\t\tPrice: $" + trackPrice.toString()
+                + "\n" + getFormattedExplicitness();
     }
 
     @NonNull
