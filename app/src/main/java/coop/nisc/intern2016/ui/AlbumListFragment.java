@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.model.Album;
 
 import java.util.ArrayList;
@@ -44,13 +45,14 @@ public final class AlbumListFragment extends ListFragment {
         //albums is never null
         //noinspection ConstantConditions
         setListAdapter(new AlbumAdapter(getContext(), albums));
+        getListView().setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
     }
 
     private final class AlbumAdapter extends ArrayAdapter<Album> {
 
         AlbumAdapter(@NonNull Context context,
                      @NonNull ArrayList<Album> albumArrayList) {
-            super(context, android.R.layout.two_line_list_item, albumArrayList);
+            super(context, R.layout.list_item_album, albumArrayList);
         }
 
         @NonNull
@@ -61,7 +63,7 @@ public final class AlbumListFragment extends ListFragment {
             final ViewHolder viewHolder;
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext())
-                        .inflate(android.R.layout.two_line_list_item, parent, false);
+                        .inflate(R.layout.list_item_album, parent, false);
                 viewHolder = new ViewHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {
@@ -72,6 +74,7 @@ public final class AlbumListFragment extends ListFragment {
             if (album != null) {
                 viewHolder.collectionName.setText(album.getCollectionName());
                 viewHolder.artistName.setText(album.getArtistName());
+                viewHolder.releaseYear.setText(album.getReleaseYear());
             }
             return convertView;
         }
@@ -80,10 +83,12 @@ public final class AlbumListFragment extends ListFragment {
 
             final TextView collectionName;
             final TextView artistName;
+            final TextView releaseYear;
 
             ViewHolder(@NonNull View convertView) {
-                collectionName = (TextView) convertView.findViewById(android.R.id.text1);
-                artistName = (TextView) convertView.findViewById(android.R.id.text2);
+                collectionName = (TextView) convertView.findViewById(R.id.album_title);
+                artistName = (TextView) convertView.findViewById(R.id.artist_name);
+                releaseYear = (TextView) convertView.findViewById(R.id.release_year);
             }
 
         }

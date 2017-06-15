@@ -60,6 +60,11 @@ public final class Album implements Parcelable {
         return artistName;
     }
 
+    @NonNull
+    public String getReleaseYear() {
+        return (releaseDate.length() > 4 ? releaseDate.substring(0, 4) : "");
+    }
+
     private Album(@NonNull Parcel parcel) {
         artistName = parcel.readString();
         collectionExplicitness = parcel.readString();
@@ -96,14 +101,9 @@ public final class Album implements Parcelable {
     public String toString() {
         return "\nAlbum: " + collectionName + "\t\tArtist: " + artistName +
                 "\nAlbumID: " + collectionId + "\t\tGenre: " + primaryGenreName +
-                "\nYear: " + formatDateToYear() + "\t\tCountry: " + country +
+                "\nYear: " + getReleaseYear() + "\t\tCountry: " + country +
                 "\nTrack Total: " + trackCount + "\t\tPrice: $" + collectionPrice.toString() +
                 "\n" + collectionExplicitness;
-    }
-
-    @NonNull
-    private String formatDateToYear() {
-        return (releaseDate.length() > 4 ? releaseDate.substring(0, 4) : "");
     }
 
 }

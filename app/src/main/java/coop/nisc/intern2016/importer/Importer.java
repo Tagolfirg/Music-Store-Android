@@ -68,7 +68,6 @@ public final class Importer {
         } catch (JSONException e) {
             Log.e(TAG, "Error importing albums", e);
         }
-        Log.d(TAG, String.valueOf(albums.size()));
         return albums;
     }
 
