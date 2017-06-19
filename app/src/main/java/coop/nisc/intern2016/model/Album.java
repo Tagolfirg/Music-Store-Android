@@ -65,6 +65,17 @@ public final class Album implements Parcelable {
         return (releaseDate.length() > 4 ? releaseDate.substring(0, 4) : "");
     }
 
+    public String getExplicitness() {
+        switch (collectionExplicitness) {
+            case "notExplicit":
+                return "Not Explicit";
+            case "cleaned":
+                return "Cleaned";
+            default:
+                return "Explicit";
+        }
+    }
+
     private Album(@NonNull Parcel parcel) {
         artistName = parcel.readString();
         collectionExplicitness = parcel.readString();

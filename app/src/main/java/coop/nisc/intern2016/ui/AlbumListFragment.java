@@ -4,11 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.model.Album;
@@ -33,7 +36,6 @@ public final class AlbumListFragment extends ListFragment {
         //noinspection deprecation
         AlbumListFragment fragment = new AlbumListFragment();
         fragment.setArguments(arguments);
-
         return fragment;
     }
 
@@ -45,6 +47,31 @@ public final class AlbumListFragment extends ListFragment {
         //albums is never null
         //noinspection ConstantConditions
         setListAdapter(new AlbumAdapter(getContext(), albums));
+    }
+
+    @Override
+    public void onListItemClick(ListView listView,
+                                View view,
+                                int position,
+                                long id) {
+        super.onListItemClick(listView, view, position, id);
+        FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag(AlbumDetailsFragment.TAG);
+        if (fragment == null) {
+
+            //position will always point to an album, not to a null
+            //noinspection ConstantConditions
+            fragment = AlbumDetailsFragment.create((Album) getArguments().getParcelableArrayList(
+                    ARGUMENT_ALBUMS).get(position));
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.enter_from_right,
+                                         R.anim.exit_to_left,
+                                         R.anim.enter_from_left,
+                                         R.anim.exit_to_right)
+                    .replace(R.id.fragment_container, fragment, AlbumDetailsFragment.TAG)
+                    .addToBackStack(TAG)
+                    .commit();
+        }
     }
 
     private final class AlbumAdapter extends ArrayAdapter<Album> {
