@@ -11,12 +11,15 @@ final class AlbumDetailViewController {
     AlbumDetailViewController(@NonNull View view,
                               @NonNull Album album) {
         TextView collectionName = (TextView) view.findViewById(R.id.album_detail_collection_name);
-        TextView artistName = (TextView) view.findViewById(R.id.album_detail_artist);
-        TextView releaseYear = (TextView) view.findViewById(R.id.album_detail_release_date);
-        TextView explicitness = (TextView) view.findViewById(R.id.album_detail_explicitness);
         collectionName.setText(album.getCollectionName());
+
+        TextView artistName = (TextView) view.findViewById(R.id.album_detail_artist);
         artistName.setText(album.getArtistName());
+
+        TextView releaseYear = (TextView) view.findViewById(R.id.album_detail_release_date);
         releaseYear.setText(album.getReleaseYear());
+
+        TextView explicitness = (TextView) view.findViewById(R.id.album_detail_explicitness);
         explicitness.setText(album.getExplicitness());
     }
 

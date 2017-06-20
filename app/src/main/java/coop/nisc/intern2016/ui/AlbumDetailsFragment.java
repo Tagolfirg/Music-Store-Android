@@ -13,7 +13,7 @@ public final class AlbumDetailsFragment extends Fragment {
 
     public static final String TAG = "AlbumDetailsFragment";
 
-    private static final String CURRENT_ALBUM = "currentAlbum";
+    private static final String ARGUMENT_ALBUM = "currentAlbum";
 
     @Deprecated
     public AlbumDetailsFragment() {
@@ -22,7 +22,7 @@ public final class AlbumDetailsFragment extends Fragment {
     @NonNull
     public static AlbumDetailsFragment create(@NonNull Album album) {
         Bundle arguments = new Bundle();
-        arguments.putParcelable(CURRENT_ALBUM, album);
+        arguments.putParcelable(ARGUMENT_ALBUM, album);
 
         //noinspection deprecation
         AlbumDetailsFragment albumDetailsFragment = new AlbumDetailsFragment();
@@ -38,7 +38,7 @@ public final class AlbumDetailsFragment extends Fragment {
 
         //album is never null
         //noinspection ConstantConditions
-        new AlbumDetailViewController(root, (Album) getArguments().getParcelable(CURRENT_ALBUM));
+        new AlbumDetailViewController(root, (Album) getArguments().getParcelable(ARGUMENT_ALBUM));
         return root;
     }
 

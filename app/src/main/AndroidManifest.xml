@@ -11,8 +11,7 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:label="@string/album_view_activity_name"
-            android:theme="@style/FullscreenTheme">
+            android:label="@string/album_view_activity_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

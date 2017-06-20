@@ -23,6 +23,7 @@ public final class AlbumListFragment extends ListFragment {
     public static final String TAG = "AlbumListFragment";
 
     private static final String ARGUMENT_ALBUMS = "albumList";
+    private Bundle arguments;
 
     @Deprecated
     public AlbumListFragment() {
@@ -40,9 +41,15 @@ public final class AlbumListFragment extends ListFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        arguments = getArguments();
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ArrayList<Album> albums = getArguments().getParcelableArrayList(ARGUMENT_ALBUMS);
+        ArrayList<Album> albums = arguments.getParcelableArrayList(ARGUMENT_ALBUMS);
 
         //albums is never null
         //noinspection ConstantConditions
@@ -54,14 +61,18 @@ public final class AlbumListFragment extends ListFragment {
                                 View view,
                                 int position,
                                 long id) {
-        super.onListItemClick(listView, view, position, id);
         FragmentManager fragmentManager = getFragmentManager();
+        showAlbumDetailFragment(fragmentManager, position);
+    }
+
+    private void showAlbumDetailFragment(FragmentManager fragmentManager,
+                                         int position) {
         Fragment fragment = fragmentManager.findFragmentByTag(AlbumDetailsFragment.TAG);
         if (fragment == null) {
 
             //position will always point to an album, not to a null
             //noinspection ConstantConditions
-            fragment = AlbumDetailsFragment.create((Album) getArguments().getParcelableArrayList(
+            fragment = AlbumDetailsFragment.create((Album) arguments.getParcelableArrayList(
                     ARGUMENT_ALBUMS).get(position));
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.enter_from_right,

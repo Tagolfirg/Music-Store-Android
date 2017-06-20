@@ -33,8 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/album_detail_collection_name"
         android:layout_marginTop="@dimen/default_space"
-        android:layout_marginBottom="@dimen/default_space"
-        android:layout_marginEnd="@dimen/list_padding"
         android:textAlignment="center"
         android:text="@string/by"
         android:textSize="@dimen/large_text_size" />
