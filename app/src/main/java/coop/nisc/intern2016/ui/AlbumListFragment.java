@@ -23,7 +23,7 @@ public final class AlbumListFragment extends ListFragment {
     public static final String TAG = "AlbumListFragment";
 
     private static final String ARGUMENT_ALBUMS = "albumList";
-    private Bundle arguments;
+    ArrayList<Album> albumList;
 
     @Deprecated
     public AlbumListFragment() {
@@ -43,17 +43,16 @@ public final class AlbumListFragment extends ListFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        arguments = getArguments();
+        albumList = getArguments().getParcelableArrayList(ARGUMENT_ALBUMS);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ArrayList<Album> albums = arguments.getParcelableArrayList(ARGUMENT_ALBUMS);
 
         //albums is never null
         //noinspection ConstantConditions
-        setListAdapter(new AlbumAdapter(getContext(), albums));
+        setListAdapter(new AlbumAdapter(getContext(), albumList));
     }
 
     @Override
@@ -61,19 +60,17 @@ public final class AlbumListFragment extends ListFragment {
                                 View view,
                                 int position,
                                 long id) {
-        FragmentManager fragmentManager = getFragmentManager();
-        showAlbumDetailFragment(fragmentManager, position);
+        showAlbumDetailFragment(albumList.get(position));
     }
 
-    private void showAlbumDetailFragment(FragmentManager fragmentManager,
-                                         int position) {
+    private void showAlbumDetailFragment(@NonNull Album album) {
+        FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(AlbumDetailsFragment.TAG);
         if (fragment == null) {
 
             //position will always point to an album, not to a null
             //noinspection ConstantConditions
-            fragment = AlbumDetailsFragment.create((Album) arguments.getParcelableArrayList(
-                    ARGUMENT_ALBUMS).get(position));
+            fragment = AlbumDetailsFragment.create(album);
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.enter_from_right,
                                          R.anim.exit_to_left,

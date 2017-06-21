@@ -2,6 +2,7 @@ package coop.nisc.intern2016.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ public final class AlbumDetailsFragment extends Fragment {
     public static final String TAG = "AlbumDetailsFragment";
 
     private static final String ARGUMENT_ALBUM = "currentAlbum";
+    private Album album;
 
     @Deprecated
     public AlbumDetailsFragment() {
@@ -31,6 +33,12 @@ public final class AlbumDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        album = getArguments().getParcelable(ARGUMENT_ALBUM);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup parent,
                              Bundle savedInstanceState) {
@@ -38,7 +46,7 @@ public final class AlbumDetailsFragment extends Fragment {
 
         //album is never null
         //noinspection ConstantConditions
-        new AlbumDetailViewController(root, (Album) getArguments().getParcelable(ARGUMENT_ALBUM));
+        new AlbumDetailViewController(root, album);
         return root;
     }
 
