@@ -23,7 +23,8 @@ public final class AlbumListFragment extends ListFragment {
     public static final String TAG = "AlbumListFragment";
 
     private static final String ARGUMENT_ALBUMS = "albumList";
-    ArrayList<Album> albumList;
+
+    private ArrayList<Album> albums;
 
     @Deprecated
     public AlbumListFragment() {
@@ -43,7 +44,7 @@ public final class AlbumListFragment extends ListFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        albumList = getArguments().getParcelableArrayList(ARGUMENT_ALBUMS);
+        albums = getArguments().getParcelableArrayList(ARGUMENT_ALBUMS);
     }
 
     @Override
@@ -52,7 +53,7 @@ public final class AlbumListFragment extends ListFragment {
 
         //albums is never null
         //noinspection ConstantConditions
-        setListAdapter(new AlbumAdapter(getContext(), albumList));
+        setListAdapter(new AlbumAdapter(getContext(), albums));
     }
 
     @Override
@@ -60,7 +61,7 @@ public final class AlbumListFragment extends ListFragment {
                                 View view,
                                 int position,
                                 long id) {
-        showAlbumDetailFragment(albumList.get(position));
+        showAlbumDetailFragment(albums.get(position));
     }
 
     private void showAlbumDetailFragment(@NonNull Album album) {

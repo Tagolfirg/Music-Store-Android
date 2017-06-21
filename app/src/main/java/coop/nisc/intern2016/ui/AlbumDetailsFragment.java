@@ -15,6 +15,7 @@ public final class AlbumDetailsFragment extends Fragment {
     public static final String TAG = "AlbumDetailsFragment";
 
     private static final String ARGUMENT_ALBUM = "currentAlbum";
+
     private Album album;
 
     @Deprecated
