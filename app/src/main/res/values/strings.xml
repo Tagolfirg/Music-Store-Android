@@ -4,4 +4,8 @@
     <string name="by">By</string>
     <string name="album_image">Album Image</string>
     <string name="separator">·</string>
+    <string name="AlbumDetailsFragmentTitle">Album Details</string>
+    <string name="AlbumListFragmentTitle">Album List</string>
+    <string name="tracks">" Tracks"</string>
+    <item name="one_half" format="float" type="dimen">0.5</item>
 </resources>

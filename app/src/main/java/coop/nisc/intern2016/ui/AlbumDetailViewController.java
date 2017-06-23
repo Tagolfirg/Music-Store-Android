@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 final class AlbumDetailViewController {
 
+    private static final String TRACKS = " Tracks";
+
     AlbumDetailViewController(@NonNull View view,
                               @NonNull Album album) {
         TextView collectionName = (TextView) view.findViewById(R.id.album_detail_collection_name);
@@ -33,34 +35,38 @@ final class AlbumDetailViewController {
                                                                          "track_search_query_result.txt"));
 
         TextView trackCount = (TextView) view.findViewById(R.id.album_detail_track_count);
-        trackCount.setText(String.valueOf(tracks.size() + " Tracks"));
+        trackCount.setText(String.valueOf(tracks.size() + TRACKS));
 
-        getTrackListViews((LinearLayout) view.findViewById(R.id.album_detail_track_list), tracks);
+        createTrackListViews((LinearLayout) view.findViewById(R.id.album_detail_track_list), tracks);
     }
 
-    private void getTrackListViews(@NonNull LinearLayout parent,
-                                   @NonNull ArrayList<Track> tracks) {
-        ViewHolder viewHolder;
+    private void createTrackListViews(@NonNull LinearLayout parent,
+                                      @NonNull ArrayList<Track> tracks) {
         for (Track track : tracks) {
             View trackView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_track, parent, false);
-            viewHolder = new ViewHolder(trackView);
-            viewHolder.trackName.setText(track.getTrackTitle());
-            viewHolder.trackDuration.setText(track.getFormattedTrackDuration());
-            viewHolder.trackNumber.setText(String.valueOf(track.getTrackNumber()));
+            new TrackViewController(trackView, track);
             parent.addView(trackView);
         }
     }
 
-    private final class ViewHolder {
+    private final class TrackViewController {
 
         final TextView trackNumber;
         final TextView trackName;
         final TextView trackDuration;
 
-        ViewHolder(@NonNull View view) {
+        TrackViewController(@NonNull View view,
+                            @NonNull Track track) {
             trackNumber = (TextView) view.findViewById(R.id.track_list_track_number);
             trackName = (TextView) view.findViewById(R.id.track_list_track_title);
             trackDuration = (TextView) view.findViewById(R.id.track_list_track_duration);
+            setTextFields(track);
+        }
+
+        private void setTextFields(@NonNull Track track) {
+            trackName.setText(track.getTrackName());
+            trackDuration.setText(track.getFormattedTrackDuration());
+            trackNumber.setText(String.valueOf(track.getTrackNumber()));
         }
 
     }

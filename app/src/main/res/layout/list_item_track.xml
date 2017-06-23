@@ -7,7 +7,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/line_width"
-        android:background="@color/colorPrimaryDark" />
+        android:background="?android:attr/listDivider" />
 
     <RelativeLayout
         android:id="@+id/track_information"
@@ -28,7 +28,7 @@
             android:layout_width="@dimen/max_track_duration_width"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical|end" />
 
         <TextView
             android:id="@+id/track_list_track_title"

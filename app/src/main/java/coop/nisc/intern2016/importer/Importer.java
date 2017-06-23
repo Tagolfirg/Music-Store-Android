@@ -46,7 +46,7 @@ public final class Importer {
 
     @NonNull
     public static ArrayList<Album> importAlbums(@NonNull String json) {
-        final ArrayList<Album> albums = new ArrayList<>();
+        ArrayList<Album> albums = new ArrayList<>();
         try {
             final JSONArray jsonArray = new JSONObject(json).getJSONArray(RESULTS);
             final int resultCount = jsonArray.length();

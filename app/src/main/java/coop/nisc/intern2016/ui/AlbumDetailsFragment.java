@@ -12,9 +12,8 @@ import coop.nisc.intern2016.model.Album;
 
 public final class AlbumDetailsFragment extends Fragment {
 
-    public static final String TAG = "AlbumDetailsFragment";
-
     private static final String ARGUMENT_ALBUM = "currentAlbum";
+    private static final String ALBUM_DETAILS = "Album Details";
 
     private Album album;
 
@@ -42,7 +41,7 @@ public final class AlbumDetailsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle("Album Details");
+        getActivity().setTitle(ALBUM_DETAILS);
     }
 
     @Override

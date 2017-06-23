@@ -44,7 +44,7 @@ public final class Track {
     }
 
     @NonNull
-    public String getTrackTitle() {
+    public String getTrackName() {
         return trackName;
     }
 
