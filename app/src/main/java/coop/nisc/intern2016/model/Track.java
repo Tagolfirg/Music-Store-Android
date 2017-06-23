@@ -44,6 +44,15 @@ public final class Track {
     }
 
     @NonNull
+    public String getTrackTitle() {
+        return trackName;
+    }
+
+    public int getTrackNumber() {
+        return trackNumber;
+    }
+
+    @NonNull
     @Override
     public String toString() {
         return "\nTrack Title: " + trackName + "\t\tArtist: " + artistName +
@@ -54,7 +63,7 @@ public final class Track {
     }
 
     @NonNull
-    private String getFormattedTrackDuration() {
+    public String getFormattedTrackDuration() {
         return (trackTimeMillis < TimeUnit.HOURS.toMillis(1) ?
                 new SimpleDateFormat("m:ss", Locale.getDefault()).format(new Date(trackTimeMillis)) :
                 new SimpleDateFormat("H:mm:ss", Locale.getDefault()).format(new Date(trackTimeMillis)));

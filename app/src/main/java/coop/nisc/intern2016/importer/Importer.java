@@ -2,7 +2,6 @@ package coop.nisc.intern2016.importer;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import com.google.common.collect.ImmutableList;
 import coop.nisc.intern2016.model.Album;
 import coop.nisc.intern2016.model.Track;
 import org.json.JSONArray;
@@ -72,8 +71,8 @@ public final class Importer {
     }
 
     @NonNull
-    public static ImmutableList<Track> importTracks(@NonNull String json) {
-        ImmutableList.Builder<Track> tracks = ImmutableList.builder();
+    public static ArrayList<Track> importTracks(@NonNull String json) {
+        ArrayList<Track> tracks = new ArrayList<>();
         try {
             final JSONArray jsonArray = new JSONObject(json).getJSONArray(RESULTS);
             final int resultCount = jsonArray.length();
@@ -95,7 +94,7 @@ public final class Importer {
         } catch (JSONException e) {
             Log.e(TAG, "Error importing tracks", e);
         }
-        return tracks.build();
+        return tracks;
     }
 
 }

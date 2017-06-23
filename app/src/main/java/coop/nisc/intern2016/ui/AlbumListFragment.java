@@ -57,6 +57,12 @@ public final class AlbumListFragment extends ListFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Album List");
+    }
+
+    @Override
     public void onListItemClick(ListView listView,
                                 View view,
                                 int position,
@@ -66,21 +72,18 @@ public final class AlbumListFragment extends ListFragment {
 
     private void showAlbumDetailFragment(@NonNull Album album) {
         FragmentManager fragmentManager = getFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag(AlbumDetailsFragment.TAG);
-        if (fragment == null) {
 
-            //position will always point to an album, not to a null
-            //noinspection ConstantConditions
-            fragment = AlbumDetailsFragment.create(album);
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.enter_from_right,
-                                         R.anim.exit_to_left,
-                                         R.anim.enter_from_left,
-                                         R.anim.exit_to_right)
-                    .replace(R.id.fragment_container, fragment, AlbumDetailsFragment.TAG)
-                    .addToBackStack(TAG)
-                    .commit();
-        }
+        //position will always point to an album, not to a null
+        //noinspection ConstantConditions
+        Fragment fragment = AlbumDetailsFragment.create(album);
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right,
+                                     R.anim.exit_to_left,
+                                     R.anim.enter_from_left,
+                                     R.anim.exit_to_right)
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(TAG)
+                .commit();
     }
 
     private final class AlbumAdapter extends ArrayAdapter<Album> {

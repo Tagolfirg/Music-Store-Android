@@ -40,6 +40,12 @@ public final class AlbumDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Album Details");
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup parent,
                              Bundle savedInstanceState) {
