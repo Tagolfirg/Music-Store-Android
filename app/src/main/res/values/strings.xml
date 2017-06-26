@@ -5,6 +5,6 @@
     <string name="separator">·</string>
     <string name="album_details_fragment_title">Album details</string>
     <string name="album_list_fragment_title">Albums</string>
-    <string name="tracks">" Tracks"</string>
+    <string name="tracks">"%d Tracks"</string>
     <item name="one_half" format="float" type="dimen">0.5</item>
 </resources>

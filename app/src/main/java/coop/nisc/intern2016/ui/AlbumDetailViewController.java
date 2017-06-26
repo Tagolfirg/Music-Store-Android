@@ -1,5 +1,6 @@
 package coop.nisc.intern2016.ui;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,12 @@ import java.util.ArrayList;
 
 final class AlbumDetailViewController {
 
+    private final Context context;
+
     AlbumDetailViewController(@NonNull View view,
                               @NonNull Album album) {
+        context = view.getContext();
+
         TextView collectionName = (TextView) view.findViewById(R.id.album_detail_collection_name);
         collectionName.setText(album.getCollectionName());
 
@@ -29,11 +34,11 @@ final class AlbumDetailViewController {
         TextView explicitness = (TextView) view.findViewById(R.id.album_detail_explicitness);
         explicitness.setText(album.getExplicitness());
 
-        ArrayList<Track> tracks = Importer.importTracks(ParseAsset.parse(view.getContext(),
+        ArrayList<Track> tracks = Importer.importTracks(ParseAsset.parse(context,
                                                                          "track_search_query_result.txt"));
 
         TextView trackCount = (TextView) view.findViewById(R.id.album_detail_track_count);
-        trackCount.setText(String.valueOf(tracks.size() + view.getResources().getString(R.string.tracks)));
+        trackCount.setText(context.getString(R.string.tracks, tracks.size()));
 
         createTrackListViews((LinearLayout) view.findViewById(R.id.album_detail_track_list), tracks);
     }
@@ -41,7 +46,7 @@ final class AlbumDetailViewController {
     private void createTrackListViews(@NonNull LinearLayout parent,
                                       @NonNull ArrayList<Track> tracks) {
         for (Track track : tracks) {
-            View trackView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_track, parent, false);
+            View trackView = LayoutInflater.from(context).inflate(R.layout.list_item_track, parent, false);
             new TrackViewController(trackView, track);
             parent.addView(trackView);
         }
