@@ -54,7 +54,7 @@
         <RelativeLayout android:id="@+id/album_detail_extra_info"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/one_line_tile_height"
             android:layout_marginStart="@dimen/small_space"
             android:layout_marginEnd="@dimen/small_space"
             android:layout_below="@id/album_detail_by">
@@ -80,7 +80,7 @@
 
             <TextView
                 android:id="@+id/album_detail_explicitness"
-                android:layout_width="80dp"
+                android:layout_width="@dimen/explicitness_max_width"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/small_space"

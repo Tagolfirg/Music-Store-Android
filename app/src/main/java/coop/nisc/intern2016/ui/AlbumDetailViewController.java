@@ -15,8 +15,6 @@ import java.util.ArrayList;
 
 final class AlbumDetailViewController {
 
-    private static final String TRACKS = " Tracks";
-
     AlbumDetailViewController(@NonNull View view,
                               @NonNull Album album) {
         TextView collectionName = (TextView) view.findViewById(R.id.album_detail_collection_name);
@@ -35,7 +33,7 @@ final class AlbumDetailViewController {
                                                                          "track_search_query_result.txt"));
 
         TextView trackCount = (TextView) view.findViewById(R.id.album_detail_track_count);
-        trackCount.setText(String.valueOf(tracks.size() + TRACKS));
+        trackCount.setText(String.valueOf(tracks.size() + view.getResources().getString(R.string.tracks)));
 
         createTrackListViews((LinearLayout) view.findViewById(R.id.album_detail_track_list), tracks);
     }
@@ -51,22 +49,16 @@ final class AlbumDetailViewController {
 
     private final class TrackViewController {
 
-        final TextView trackNumber;
-        final TextView trackName;
-        final TextView trackDuration;
-
         TrackViewController(@NonNull View view,
                             @NonNull Track track) {
-            trackNumber = (TextView) view.findViewById(R.id.track_list_track_number);
-            trackName = (TextView) view.findViewById(R.id.track_list_track_title);
-            trackDuration = (TextView) view.findViewById(R.id.track_list_track_duration);
-            setTextFields(track);
-        }
+            ((TextView) view.findViewById(R.id.track_list_track_title))
+                    .setText(track.getTrackName());
 
-        private void setTextFields(@NonNull Track track) {
-            trackName.setText(track.getTrackName());
-            trackDuration.setText(track.getFormattedTrackDuration());
-            trackNumber.setText(String.valueOf(track.getTrackNumber()));
+            ((TextView) view.findViewById(R.id.track_list_track_number))
+                    .setText(String.valueOf(track.getTrackNumber()));
+
+            ((TextView) view.findViewById(R.id.track_list_track_duration))
+                    .setText(track.getFormattedTrackDuration());
         }
 
     }

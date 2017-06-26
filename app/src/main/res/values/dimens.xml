@@ -7,7 +7,7 @@
     <dimen name="small_text_size">14sp</dimen>
     <dimen name="list_padding">8dp</dimen>
     <dimen name="album_details_artwork_size">150dp</dimen>
-    <dimen name="flat">0dp</dimen>
+    <dimen name="explicitness_max_width">80dp</dimen>
     <dimen name="max_track_number_width">19dp</dimen>
     <dimen name="max_track_duration_width">35dp</dimen>
     <dimen name="medium_size_word_length_by">24dp</dimen>

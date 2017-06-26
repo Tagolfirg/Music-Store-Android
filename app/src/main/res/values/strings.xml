@@ -1,11 +1,10 @@
 <resources>
     <string name="app_name">intern2016</string>
-    <string name="album_view_activity_name">Albums</string>
     <string name="by">By</string>
     <string name="album_image">Album Image</string>
     <string name="separator">·</string>
-    <string name="AlbumDetailsFragmentTitle">Album Details</string>
-    <string name="AlbumListFragmentTitle">Album List</string>
+    <string name="album_details_fragment_title">Album details</string>
+    <string name="album_list_fragment_title">Albums</string>
     <string name="tracks">" Tracks"</string>
     <item name="one_half" format="float" type="dimen">0.5</item>
 </resources>

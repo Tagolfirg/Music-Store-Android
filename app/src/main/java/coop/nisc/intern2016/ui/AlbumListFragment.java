@@ -23,7 +23,6 @@ public final class AlbumListFragment extends ListFragment {
     public static final String TAG = "AlbumListFragment";
 
     private static final String ARGUMENT_ALBUMS = "albumList";
-    private static final String ALBUM_LIST = "Album List";
 
     private ArrayList<Album> albums;
 
@@ -60,7 +59,7 @@ public final class AlbumListFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(ALBUM_LIST);
+        getActivity().setTitle(getResources().getString(R.string.album_list_fragment_title));
     }
 
     @Override
