@@ -108,9 +108,9 @@ public final class AlbumListFragment extends ListFragment {
             }
             Album album = getItem(position);
             if (album != null) {
-                viewHolder.collectionName.setText(album.getCollectionName());
-                viewHolder.artistName.setText(album.getArtistName());
-                viewHolder.releaseYear.setText(album.getReleaseYear());
+                viewHolder.collectionName.setText(album.collectionName);
+                viewHolder.artistName.setText(album.artistName);
+                viewHolder.releaseYear.setText(getYear(album.releaseDate));
             }
             return convertView;
         }
@@ -129,6 +129,14 @@ public final class AlbumListFragment extends ListFragment {
 
         }
 
+    }
+
+    @NonNull
+    private String getYear(@NonNull String releaseDate) {
+        if (releaseDate.length() > 3) {
+            return releaseDate.substring(0, 4);
+        }
+        return "";
     }
 
 }

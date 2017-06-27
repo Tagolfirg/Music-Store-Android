@@ -1,10 +1,19 @@
 <resources>
-    <string name="app_name">intern2016</string>
-    <string name="by">By</string>
-    <string name="album_image">Album Image</string>
-    <string name="separator">·</string>
     <string name="album_details_fragment_title">Album details</string>
+    <string name="album_image">Album Image</string>
     <string name="album_list_fragment_title">Albums</string>
-    <string name="tracks">"%d Tracks"</string>
+    <string name="app_name">intern2016</string>
+    <string name="by">By %s</string>
+    <string name="cleaned">Cleaned</string>
+    <string name="disc_x_of_y">Disc %1$d of %2$d</string>
+    <string name="explicit">Explicit</string>
+    <string name="from">"From "</string>
+    <string name="hours_and_minutes">%1$s hours %2$s minutes</string>
+    <string name="minutes_and_seconds">%1$s minutes %2$s seconds</string>
+    <string name="not_explicit">Not explicit</string>
     <item name="one_half" format="float" type="dimen">0.5</item>
+    <string name="price">$%s</string>
+    <string name="track_details_fragment_title">Track details</string>
+    <string name="track_number">Track Number: %d</string>
+    <string name="year_and_track_count">"%1$s  ·  %2$d Tracks"</string>
 </resources>

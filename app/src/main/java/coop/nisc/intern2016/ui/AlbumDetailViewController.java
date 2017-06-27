@@ -9,47 +9,70 @@ import android.widget.TextView;
 import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.importer.Importer;
 import coop.nisc.intern2016.model.Album;
+import coop.nisc.intern2016.model.Explicitness;
 import coop.nisc.intern2016.model.Track;
 import coop.nisc.intern2016.util.ParseAsset;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 final class AlbumDetailViewController {
 
     private final Context context;
 
+    private OnClickListener listener;
+
     AlbumDetailViewController(@NonNull View view,
                               @NonNull Album album) {
         context = view.getContext();
 
-        TextView collectionName = (TextView) view.findViewById(R.id.album_detail_collection_name);
-        collectionName.setText(album.getCollectionName());
+        ((TextView) view.findViewById(R.id.album_detail_collection_name))
+                .setText(album.collectionName);
 
-        TextView artistName = (TextView) view.findViewById(R.id.album_detail_artist);
-        artistName.setText(album.getArtistName());
+        ((TextView) view.findViewById(R.id.album_detail_artist))
+                .setText(context.getString(R.string.by, album.artistName));
 
-        TextView releaseYear = (TextView) view.findViewById(R.id.album_detail_release_date);
-        releaseYear.setText(album.getReleaseYear());
-
-        TextView explicitness = (TextView) view.findViewById(R.id.album_detail_explicitness);
-        explicitness.setText(album.getExplicitness());
+        ((TextView) view.findViewById(R.id.album_detail_explicitness))
+                .setText(Explicitness.getType(album.collectionExplicitness).getDisplayString(context));
 
         ArrayList<Track> tracks = Importer.importTracks(ParseAsset.parse(context,
                                                                          "track_search_query_result.txt"));
-
-        TextView trackCount = (TextView) view.findViewById(R.id.album_detail_track_count);
-        trackCount.setText(context.getString(R.string.tracks, tracks.size()));
+        ((TextView) view.findViewById(R.id.album_detail_release_date_and_track_count))
+                .setText(context.getString(R.string.year_and_track_count, getYear(album.releaseDate), tracks.size()));
 
         createTrackListViews((LinearLayout) view.findViewById(R.id.album_detail_track_list), tracks);
     }
 
+    @NonNull
+    private String getYear(@NonNull String releaseDate) {
+        if (releaseDate.length() > 3) {
+            return releaseDate.substring(0, 4);
+        }
+        return "";
+    }
+
     private void createTrackListViews(@NonNull LinearLayout parent,
                                       @NonNull ArrayList<Track> tracks) {
-        for (Track track : tracks) {
-            View trackView = LayoutInflater.from(context).inflate(R.layout.list_item_track, parent, false);
+        for (final Track track : tracks) {
+            final View trackView = LayoutInflater.from(context).inflate(R.layout.list_item_track, parent, false);
+            trackView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        listener.onClick(track);
+                    }
+                }
+            });
             new TrackViewController(trackView, track);
             parent.addView(trackView);
         }
+    }
+
+    void setOnClickListener(OnClickListener listener) {
+        this.listener = listener;
     }
 
     private final class TrackViewController {
@@ -57,14 +80,28 @@ final class AlbumDetailViewController {
         TrackViewController(@NonNull View view,
                             @NonNull Track track) {
             ((TextView) view.findViewById(R.id.track_list_track_title))
-                    .setText(track.getTrackName());
+                    .setText(track.trackName);
 
             ((TextView) view.findViewById(R.id.track_list_track_number))
-                    .setText(String.valueOf(track.getTrackNumber()));
+                    .setText(String.valueOf(track.trackNumber));
 
             ((TextView) view.findViewById(R.id.track_list_track_duration))
-                    .setText(track.getFormattedTrackDuration());
+                    .setText(getFormattedTrackDuration(track.trackTimeMillis));
         }
+
+    }
+
+    @NonNull
+    private String getFormattedTrackDuration(int trackTimeMillis) {
+        return (trackTimeMillis < TimeUnit.HOURS.toMillis(1) ?
+                new SimpleDateFormat("m:ss", Locale.getDefault()).format(new Date(trackTimeMillis)) :
+                new SimpleDateFormat("H:mm:ss", Locale.getDefault()).format(new Date(trackTimeMillis)));
+
+    }
+
+    interface OnClickListener {
+
+        void onClick(@NonNull Track track);
 
     }
 

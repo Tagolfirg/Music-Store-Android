@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/default_space">
+
+    <TextView
+        android:id="@+id/track_details_track_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/max_track_title_height"
+        android:layout_marginTop="@dimen/small_space"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textSize="@dimen/large_text_size"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/track_details_track_name"
+        android:layout_marginTop="@dimen/default_space"
+        android:background="@color/colorPrimaryDark" />
+
+    <RelativeLayout
+        android:id="@+id/from_album_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider1"
+        android:layout_marginTop="@dimen/default_space"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/from"
+            android:textSize="@dimen/medium_text_size" />
+
+        <TextView
+            android:id="@+id/track_details_album_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/from"
+            android:textStyle="italic"
+            android:textSize="@dimen/medium_text_size" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/track_details_artist_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/from_album_title"
+        android:layout_marginTop="@dimen/small_space"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textSize="@dimen/medium_text_size" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/track_details_artist_name"
+        android:layout_marginTop="@dimen/default_space"
+        android:background="@color/colorPrimaryDark" />
+
+    <TextView
+        android:id="@+id/track_details_track_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/divider2"
+        android:layout_marginTop="@dimen/default_space"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="@dimen/small_text_size" />
+
+    <TextView
+        android:id="@+id/track_details_track_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/divider2"
+        android:layout_marginTop="@dimen/default_space"
+        android:textSize="@dimen/small_text_size" />
+
+    <TextView
+        android:id="@+id/track_details_disc_x_of_y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/track_details_track_number"
+        android:layout_marginTop="@dimen/default_space"
+        android:textSize="@dimen/small_text_size" />
+
+    <TextView
+        android:id="@+id/track_details_primary_genre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/track_details_track_duration"
+        android:layout_marginTop="@dimen/default_space"
+        android:textSize="@dimen/small_text_size" />
+
+    <TextView
+        android:id="@+id/track_details_track_explicitness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/track_details_disc_x_of_y"
+        android:layout_marginTop="@dimen/default_space"
+        android:textSize="@dimen/small_text_size" />
+
+    <TextView
+        android:id="@+id/track_details_track_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/track_details_primary_genre"
+        android:layout_marginTop="@dimen/default_space"
+        android:textSize="@dimen/small_text_size" />
+
+</RelativeLayout>

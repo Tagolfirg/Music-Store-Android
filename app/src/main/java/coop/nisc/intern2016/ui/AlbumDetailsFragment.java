@@ -4,13 +4,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.model.Album;
+import coop.nisc.intern2016.model.Track;
 
-public final class AlbumDetailsFragment extends Fragment {
+public final class AlbumDetailsFragment extends Fragment implements AlbumDetailViewController.OnClickListener {
+
+    public static final String TAG = "AlbumDetailsFragment";
 
     private static final String ARGUMENT_ALBUM = "currentAlbum";
 
@@ -48,11 +52,26 @@ public final class AlbumDetailsFragment extends Fragment {
                              ViewGroup parent,
                              Bundle savedInstanceState) {
         View root = LayoutInflater.from(getContext()).inflate(R.layout.album_details, parent, false);
-
         //album is never null
         //noinspection ConstantConditions
-        new AlbumDetailViewController(root, album);
+        new AlbumDetailViewController(root, album).setOnClickListener(this);
         return root;
+    }
+
+    @Override
+    public void onClick(@NonNull Track track) {
+        FragmentManager fragmentManager = getFragmentManager();
+        //position will always point to an album, not to a null
+        //noinspection ConstantConditions
+        Fragment fragment = TrackDetailsFragment.create(track);
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right,
+                                     R.anim.exit_to_left,
+                                     R.anim.enter_from_left,
+                                     R.anim.exit_to_right)
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(TAG)
+                .commit();
     }
 
 }

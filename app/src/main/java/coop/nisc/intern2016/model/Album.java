@@ -20,14 +20,14 @@ public final class Album implements Parcelable {
         }
     };
 
-    private final String artistName;
-    private final String collectionExplicitness;
+    public final String artistName;
+    public final String collectionExplicitness;
     private final String collectionId;
-    private final String collectionName;
+    public final String collectionName;
     private final BigDecimal collectionPrice;
     private final String country;
     private final String primaryGenreName;
-    private final String releaseDate;
+    public final String releaseDate;
     private final int trackCount;
 
     public Album(@NonNull String artistName,
@@ -49,32 +49,6 @@ public final class Album implements Parcelable {
         this.releaseDate = releaseDate;
         this.trackCount = trackCount;
         }
-
-    @NonNull
-    public String getCollectionName() {
-        return collectionName;
-    }
-
-    @NonNull
-    public String getArtistName() {
-        return artistName;
-    }
-
-    @NonNull
-    public String getReleaseYear() {
-        return (releaseDate.length() > 4 ? releaseDate.substring(0, 4) : "");
-    }
-
-    public String getExplicitness() {
-        switch (collectionExplicitness) {
-            case "notExplicit":
-                return "Not Explicit";
-            case "cleaned":
-                return "Cleaned";
-            default:
-                return "Explicit";
-        }
-    }
 
     private Album(@NonNull Parcel parcel) {
         artistName = parcel.readString();
@@ -105,16 +79,6 @@ public final class Album implements Parcelable {
         dest.writeString(primaryGenreName);
         dest.writeString(releaseDate);
         dest.writeInt(trackCount);
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "\nAlbum: " + collectionName + "\t\tArtist: " + artistName +
-                "\nAlbumID: " + collectionId + "\t\tGenre: " + primaryGenreName +
-                "\nYear: " + getReleaseYear() + "\t\tCountry: " + country +
-                "\nTrack Total: " + trackCount + "\t\tPrice: $" + collectionPrice.toString() +
-                "\n" + collectionExplicitness;
     }
 
 }

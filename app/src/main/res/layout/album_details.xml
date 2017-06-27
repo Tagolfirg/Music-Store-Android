@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/album_detail_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -32,21 +33,11 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/album_detail_by"
-            android:layout_width="@dimen/medium_size_word_length_by"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/album_detail_artwork"
-            android:layout_marginStart="@dimen/default_space"
-            android:text="@string/by"
-            android:textSize="@dimen/medium_text_size" />
-
-        <TextView
             android:id="@+id/album_detail_artist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/album_detail_artwork"
-            android:layout_marginBottom="@dimen/default_space"
-            android:layout_toEndOf="@id/album_detail_by"
+            android:layout_marginStart="@dimen/default_space"
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="@dimen/medium_text_size" />
@@ -57,26 +48,7 @@
             android:layout_height="@dimen/one_line_tile_height"
             android:layout_marginStart="@dimen/small_space"
             android:layout_marginEnd="@dimen/small_space"
-            android:layout_below="@id/album_detail_by">
-
-            <TextView
-                android:id="@+id/album_detail_release_date"
-                android:layout_width="@dimen/max_year_width"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/small_space"
-                android:gravity="center_vertical"
-                android:textSize="@dimen/small_text_size" />
-
-            <TextView
-                android:id="@+id/album_detail_separator"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toEndOf="@id/album_detail_release_date"
-                android:gravity="center_vertical"
-                android:paddingEnd="@dimen/small_space"
-                android:paddingStart="@dimen/small_space"
-                android:text="@string/separator"
-                android:textSize="@dimen/large_text_size" />
+            android:layout_below="@id/album_detail_artist">
 
             <TextView
                 android:id="@+id/album_detail_explicitness"
@@ -88,16 +60,14 @@
                 android:textSize="@dimen/small_text_size" />
 
             <TextView
-                android:id="@+id/album_detail_track_count"
+                android:id="@+id/album_detail_release_date_and_track_count"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/default_space"
-                android:layout_toEndOf="@id/album_detail_separator"
-                android:layout_toStartOf="@id/album_detail_explicitness"
-                android:ellipsize="end"
+                android:layout_marginStart="@dimen/small_space"
                 android:gravity="center_vertical"
-                android:maxLines="1"
-                android:textSize="@dimen/small_text_size" />
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/album_detail_explicitness"
+                android:textSize="@dimen/medium_text_size" />
 
         </RelativeLayout>
 

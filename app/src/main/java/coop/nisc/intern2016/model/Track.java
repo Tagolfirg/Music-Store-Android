@@ -1,25 +1,35 @@
 package coop.nisc.intern2016.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
-public final class Track {
+public final class Track implements Parcelable {
 
-    private final String artistName;
-    private final String collectionName;
-    private final int discCount;
-    private final int discNumber;
-    private final String primaryGenreName;
-    private final String trackExplicitness;
-    private final String trackName;
-    private final int trackNumber;
-    private final BigDecimal trackPrice;
-    private final int trackTimeMillis;
+    public static final Creator<Track> CREATOR = new Creator<Track>() {
+        @Override
+        public Track createFromParcel(Parcel in) {
+            return new Track(in);
+        }
+
+        @Override
+        public Track[] newArray(int size) {
+            return new Track[size];
+        }
+    };
+
+    public final String artistName;
+    public final String collectionName;
+    public final int discCount;
+    public final int discNumber;
+    public final String primaryGenreName;
+    public final String trackExplicitness;
+    public final String trackName;
+    public final int trackNumber;
+    public final BigDecimal trackPrice;
+    public final int trackTimeMillis;
 
     public Track(@NonNull String artistName,
                  @NonNull String collectionName,
@@ -43,35 +53,37 @@ public final class Track {
         this.trackTimeMillis = trackTimeMillis;
     }
 
-    @NonNull
-    public String getTrackName() {
-        return trackName;
+    private Track(@NonNull Parcel in) {
+        artistName = in.readString();
+        collectionName = in.readString();
+        discCount = in.readInt();
+        discNumber = in.readInt();
+        primaryGenreName = in.readString();
+        trackExplicitness = in.readString();
+        trackName = in.readString();
+        trackNumber = in.readInt();
+        trackPrice = BigDecimal.valueOf(in.readDouble());
+        trackTimeMillis = in.readInt();
     }
 
-    public int getTrackNumber() {
-        return trackNumber;
-    }
-
-    @NonNull
     @Override
-    public String toString() {
-        return "\nTrack Title: " + trackName + "\t\tArtist: " + artistName +
-                "\nAlbum Title: " + collectionName + "\t\tGenre: " + primaryGenreName +
-                "\nTrack Number: " + trackNumber + "\t\tDisc Number: " + discNumber + "/" + discCount +
-                "\nTime: " + getFormattedTrackDuration() + "\t\tPrice: $" + trackPrice.toString() +
-                "\n" + getFormattedExplicitness();
+    public void writeToParcel(Parcel dest,
+                              int flags) {
+        dest.writeString(artistName);
+        dest.writeString(collectionName);
+        dest.writeInt(discCount);
+        dest.writeInt(discNumber);
+        dest.writeString(primaryGenreName);
+        dest.writeString(trackExplicitness);
+        dest.writeString(trackName);
+        dest.writeInt(trackNumber);
+        dest.writeDouble(trackPrice.doubleValue());
+        dest.writeInt(trackTimeMillis);
     }
 
-    @NonNull
-    public String getFormattedTrackDuration() {
-        return (trackTimeMillis < TimeUnit.HOURS.toMillis(1) ?
-                new SimpleDateFormat("m:ss", Locale.getDefault()).format(new Date(trackTimeMillis)) :
-                new SimpleDateFormat("H:mm:ss", Locale.getDefault()).format(new Date(trackTimeMillis)));
-    }
-
-    @NonNull
-    private String getFormattedExplicitness() {
-        return ("Explicit".equals(trackExplicitness) ? "Explicit" : "Not Explicit");
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
 }

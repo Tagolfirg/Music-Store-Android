@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
 
     <View
         android:layout_width="match_parent"
@@ -25,7 +26,7 @@
 
         <TextView
             android:id="@+id/track_list_track_duration"
-            android:layout_width="@dimen/max_track_duration_width"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:gravity="center_vertical|end" />
