@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 final class TrackDetailViewController {
 
-    private Context context;
+    private final Context context;
 
     TrackDetailViewController(@NonNull View view,
                               @NonNull Track track) {

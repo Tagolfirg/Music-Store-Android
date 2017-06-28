@@ -11,9 +11,7 @@ public enum Explicitness {
     CLEANED("cleaned", R.string.cleaned);
 
     private final String code;
-    private final
-    @StringRes
-    int resourceId;
+    private final @StringRes int resourceId;
 
     Explicitness(String code,
                  @StringRes int resourceId) {

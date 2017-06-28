@@ -16,7 +16,7 @@ public final class AlbumDetailsFragment extends Fragment implements AlbumDetailV
 
     public static final String TAG = "AlbumDetailsFragment";
 
-    private static final String ARGUMENT_ALBUM = "currentAlbum";
+    private static final String ARGUMENT_ALBUM = "album";
 
     private Album album;
 
@@ -54,12 +54,17 @@ public final class AlbumDetailsFragment extends Fragment implements AlbumDetailV
         View root = LayoutInflater.from(getContext()).inflate(R.layout.album_details, parent, false);
         //album is never null
         //noinspection ConstantConditions
-        new AlbumDetailViewController(root, album).setOnClickListener(this);
+        AlbumDetailViewController controller = new AlbumDetailViewController(root, album);
+        controller.setOnClickListener(this);
         return root;
     }
 
     @Override
     public void onClick(@NonNull Track track) {
+        showTrackDetailsFragment(track);
+    }
+
+    private void showTrackDetailsFragment(@NonNull Track track) {
         FragmentManager fragmentManager = getFragmentManager();
         //position will always point to an album, not to a null
         //noinspection ConstantConditions

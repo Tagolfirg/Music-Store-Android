@@ -12,7 +12,7 @@ import coop.nisc.intern2016.model.Track;
 
 public final class TrackDetailsFragment extends Fragment {
 
-    private static final String ARGUMENT_TRACK = "currentTrack";
+    private static final String ARGUMENT_TRACK = "track";
 
     private Track track;
 
