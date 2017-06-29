@@ -15,7 +15,7 @@ public enum Explicitness {
     @StringRes
     private final int resourceId;
 
-    Explicitness(String code,
+    Explicitness(@NonNull String code,
                  @StringRes int resourceId) {
         this.code = code;
         this.resourceId = resourceId;
