@@ -6,12 +6,14 @@ import android.support.annotation.StringRes;
 import coop.nisc.intern2016.R;
 
 public enum Explicitness {
-    EXPLICIT("explicit", R.string.not_explicit),
+    EXPLICIT("explicit", R.string.explicit),
     NOT_EXPLICIT("notExplicit", R.string.not_explicit),
     CLEANED("cleaned", R.string.cleaned);
 
     private final String code;
-    private final @StringRes int resourceId;
+
+    @StringRes
+    private final int resourceId;
 
     Explicitness(String code,
                  @StringRes int resourceId) {

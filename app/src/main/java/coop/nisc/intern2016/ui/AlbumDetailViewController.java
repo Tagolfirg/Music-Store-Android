@@ -40,8 +40,9 @@ final class AlbumDetailViewController {
 
         ArrayList<Track> tracks = Importer.importTracks(ParseAsset.parse(context,
                                                                          "track_search_query_result.txt"));
-        ((TextView) view.findViewById(R.id.album_detail_release_date_and_track_count))
-                .setText(context.getString(R.string.year_and_track_count, getYear(album.releaseDate), tracks.size()));
+        ((TextView) view.findViewById(R.id.album_detail_year_and_tracks))
+                .setText(context.getResources().getQuantityString(
+                        R.plurals.year_and_track_count, tracks.size(), getYear(album.releaseDate), tracks.size()));
 
         createTrackListViews((LinearLayout) view.findViewById(R.id.album_detail_track_list), tracks);
     }
@@ -96,7 +97,6 @@ final class AlbumDetailViewController {
         return (trackTimeMillis < TimeUnit.HOURS.toMillis(1) ?
                 new SimpleDateFormat("m:ss", Locale.getDefault()).format(new Date(trackTimeMillis)) :
                 new SimpleDateFormat("H:mm:ss", Locale.getDefault()).format(new Date(trackTimeMillis)));
-
     }
 
     interface OnClickListener {

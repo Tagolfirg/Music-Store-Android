@@ -8,7 +8,10 @@
     <string name="cleaned">Cleaned</string>
 
     <!--Album Details-->
-    <string name="year_and_track_count">"%1$s  ·  %2$d Tracks"</string>
+    <plurals name="year_and_track_count">
+        <item quantity="one">"%1$s  ·  %2$d Track"</item>
+        <item quantity="other">"%1$s  ·  %2$d Tracks"</item>
+    </plurals>
     <string name="album_details_fragment_title">Album details</string>
     <string name="album_image">Album Image</string>
     <string name="album_list_fragment_title">Albums</string>
@@ -19,8 +22,22 @@
     <string name="by">By %s</string>
     <string name="track_number">Track Number: %d</string>
     <string name="disc_x_of_y">Disc %1$d of %2$d</string>
-    <string name="hours_and_minutes">%1$s hours %2$s minutes</string>
-    <string name="minutes_and_seconds">%1$s minutes %2$s seconds</string>
+    <plurals name="hour_and_minutes">
+        <item quantity="one">%1$s hour %2$s minute</item>
+        <item quantity="other">%1$s hour %2$s minutes</item>
+    </plurals>
+    <plurals name="hours_and_minutes">
+        <item quantity="one">%1$s hours %2$s minute</item>
+        <item quantity="other">%1$s hours %2$s minutes</item>
+    </plurals>
+    <plurals name="minute_and_seconds">
+        <item quantity="one">%1$s minute %2$s second</item>
+        <item quantity="other">%1$s minute %2$s seconds</item>
+    </plurals>
+    <plurals name="minutes_and_seconds">
+        <item quantity="one">%1$s minutes %2$s second</item>
+        <item quantity="other">%1$s minutes %2$s seconds</item>
+    </plurals>
     <string name="price">$%s</string>
 
 </resources>

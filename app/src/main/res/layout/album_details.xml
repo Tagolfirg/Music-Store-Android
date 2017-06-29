@@ -60,7 +60,7 @@
                 android:textSize="@dimen/small_text_size" />
 
             <TextView
-                android:id="@+id/album_detail_release_date_and_track_count"
+                android:id="@+id/album_detail_year_and_tracks"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/small_space"

@@ -51,18 +51,38 @@ final class TrackDetailViewController {
 
     @NonNull
     private String getFormattedTrackDuration(int trackTimeMillis) {
-        String implicitFormat = (trackTimeMillis < TimeUnit.HOURS.toMillis(1) ?
-                                 new SimpleDateFormat("m:ss", Locale.getDefault()).format(new Date(trackTimeMillis)) :
-                                 new SimpleDateFormat("H:mm:ss",
-                                                      Locale.getDefault()).format(new Date(trackTimeMillis)));
+        String implicitFormat =
+                (trackTimeMillis < TimeUnit.HOURS.toMillis(1) ?
+                 new SimpleDateFormat("m:s", Locale.getDefault()).format(new Date(trackTimeMillis)) :
+                 new SimpleDateFormat("H:m:s", Locale.getDefault()).format(new Date(trackTimeMillis)));
         String[] splitTime = implicitFormat.split(":");
-        if (splitTime.length > 2) {
-            return context.getString(R.string.hours_and_minutes, splitTime[0], splitTime[1]);
-        } else if (splitTime.length > 1) {
-            return context.getString(R.string.minutes_and_seconds, splitTime[0], splitTime[1]);
-        } else {
-            return "";
+        int largerTimeUnit = Integer.valueOf(splitTime[0]);
+        int smallerTimeUnit = Integer.valueOf(splitTime[1]);
+
+        int resourceId = determineResourceId(splitTime);
+        if (resourceId != 0) {
+            return context.getResources()
+                    .getQuantityString(resourceId, smallerTimeUnit, largerTimeUnit, smallerTimeUnit);
         }
+        return implicitFormat;
+    }
+
+    private int determineResourceId(@NonNull String[] splitTime) {
+        int largerTimeUnit = Integer.valueOf(splitTime[0]);
+        if (splitTime.length > 2) {
+            if (largerTimeUnit == 1) {
+                return R.plurals.hour_and_minutes;
+            } else {
+                return R.plurals.hours_and_minutes;
+            }
+        } else if (splitTime.length == 2) {
+            if (largerTimeUnit == 1) {
+                return R.plurals.minute_and_seconds;
+            } else {
+                return R.plurals.minutes_and_seconds;
+            }
+        }
+        return 0;
     }
 
 }
