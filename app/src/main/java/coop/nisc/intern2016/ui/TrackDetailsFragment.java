@@ -40,7 +40,7 @@ public final class TrackDetailsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(getResources().getString(R.string.track_details_fragment_title));
+        getActivity().setTitle(getString(R.string.track_details_fragment_title));
     }
 
     @Override

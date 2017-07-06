@@ -20,14 +20,14 @@ public final class Album implements Parcelable {
         }
     };
 
-    public final String artistName;
-    public final String collectionExplicitness;
+    @NonNull public final String artistName;
+    @NonNull public final String collectionExplicitness;
     private final String collectionId;
-    public final String collectionName;
+    @NonNull public final String collectionName;
     private final BigDecimal collectionPrice;
     private final String country;
     private final String primaryGenreName;
-    public final String releaseDate;
+    @NonNull public final String releaseDate;
     private final int trackCount;
 
     public Album(@NonNull String artistName,

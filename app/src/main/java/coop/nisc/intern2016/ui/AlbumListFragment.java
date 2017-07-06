@@ -59,7 +59,7 @@ public final class AlbumListFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(getResources().getString(R.string.album_list_fragment_title));
+        getActivity().setTitle(getString(R.string.album_list_fragment_title));
     }
 
     @Override

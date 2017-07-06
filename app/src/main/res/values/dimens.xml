@@ -12,6 +12,7 @@
     <dimen name="default_line_height">25dp</dimen>
     <dimen name="one_line_tile_height">48dp</dimen>
     <dimen name="max_track_title_height">56dp</dimen>
+    <dimen name="action_bar_height">56dp</dimen>
     <dimen name="explicitness_max_width">80dp</dimen>
     <dimen name="three_line_tile_height">88dp</dimen>
     <dimen name="album_details_artwork_size">150dp</dimen>
@@ -20,5 +21,6 @@
     <dimen name="small_text_size">14sp</dimen>
     <dimen name="medium_text_size">16sp</dimen>
     <dimen name="large_text_size">24sp</dimen>
+    <dimen name="flat">0dp</dimen>
 
 </resources>

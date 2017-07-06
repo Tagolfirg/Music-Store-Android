@@ -57,14 +57,11 @@ final class AlbumDetailViewController {
 
     private void createTrackListViews(@NonNull LinearLayout parent,
                                       @NonNull ArrayList<Track> tracks) {
-        for (final Track track : tracks) {
+        for (Track track : tracks) {
             final View trackView = LayoutInflater.from(context).inflate(R.layout.list_item_track, parent, false);
-            trackView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (listener != null) {
-                        listener.onClick(track);
-                    }
+            trackView.setOnClickListener(view -> {
+                if (listener != null) {
+                    listener.onClick(track);
                 }
             });
             new TrackViewController(trackView, track);

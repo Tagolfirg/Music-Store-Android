@@ -20,15 +20,15 @@ public final class Track implements Parcelable {
         }
     };
 
-    public final String artistName;
-    public final String collectionName;
+    @NonNull public final String artistName;
+    @NonNull public final String collectionName;
     public final int discCount;
     public final int discNumber;
-    public final String primaryGenreName;
-    public final String trackExplicitness;
-    public final String trackName;
+    @NonNull public final String primaryGenreName;
+    @NonNull public final String trackExplicitness;
+    @NonNull public final String trackName;
     public final int trackNumber;
-    public final BigDecimal trackPrice;
+    @NonNull public final BigDecimal trackPrice;
     public final int trackTimeMillis;
 
     public Track(@NonNull String artistName,

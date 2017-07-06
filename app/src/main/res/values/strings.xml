@@ -23,5 +23,9 @@
     <string name="track_number">Track Number: %d</string>
     <string name="disc_x_of_y">Disc %1$d of %2$d</string>
     <string name="price">$%s</string>
+    <string name="search">Search</string>
+    <string name="starting_app_title">Album search</string>
+    <string name="album_search_hint">Search for albums…</string>
+    <string name="no_results">No results to show.\nTry searching for albums!</string>
 
 </resources>

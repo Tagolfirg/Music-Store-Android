@@ -12,7 +12,7 @@ import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.model.Album;
 import coop.nisc.intern2016.model.Track;
 
-public final class AlbumDetailsFragment extends Fragment implements AlbumDetailViewController.OnClickListener {
+public final class AlbumDetailsFragment extends Fragment {
 
     public static final String TAG = "AlbumDetailsFragment";
 
@@ -44,7 +44,7 @@ public final class AlbumDetailsFragment extends Fragment implements AlbumDetailV
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle(getResources().getString(R.string.album_details_fragment_title));
+        getActivity().setTitle(getString(R.string.album_details_fragment_title));
     }
 
     @Override
@@ -55,13 +55,8 @@ public final class AlbumDetailsFragment extends Fragment implements AlbumDetailV
         //album is never null
         //noinspection ConstantConditions
         AlbumDetailViewController controller = new AlbumDetailViewController(root, album);
-        controller.setOnClickListener(this);
+        controller.setOnClickListener(this::showTrackDetailsFragment);
         return root;
-    }
-
-    @Override
-    public void onClick(@NonNull Track track) {
-        showTrackDetailsFragment(track);
     }
 
     private void showTrackDetailsFragment(@NonNull Track track) {
