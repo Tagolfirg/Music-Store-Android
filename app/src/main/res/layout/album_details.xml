@@ -14,7 +14,7 @@
             android:layout_width="@dimen/album_details_artwork_size"
             android:layout_height="@dimen/album_details_artwork_size"
             android:layout_marginBottom="@dimen/default_space"
-            android:layout_marginTop="@dimen/small_space"
+            android:layout_marginTop="@dimen/default_space"
             android:layout_marginStart="@dimen/default_space"
             android:background="@color/colorPrimaryDark"
             android:contentDescription="@string/album_image" />

@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import coop.nisc.intern2016.R;
@@ -39,6 +41,14 @@ public final class AlbumDetailsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         album = getArguments().getParcelable(ARGUMENT_ALBUM);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu,
+                                    MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        (menu.findItem(R.id.search)).setVisible(false);
     }
 
     @Override

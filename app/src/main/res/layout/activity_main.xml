@@ -4,10 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/small_space"
     tools:context="coop.nisc.intern2016.ui.MainActivity">
-
-    <include layout="@layout/view_switcher" />
 
     <LinearLayout
         android:id="@+id/fragment_container"

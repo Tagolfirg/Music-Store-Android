@@ -22,20 +22,15 @@ public final class AlbumListFragment extends ListFragment {
 
     public static final String TAG = "AlbumListFragment";
 
-    private static final String ARGUMENT_ALBUMS = "albumList";
+    private static final String ARGUMENT_ALBUMS = "albums";
 
     private ArrayList<Album> albums;
+    private OnClickListener onClickListener;
 
-    @Deprecated
-    public AlbumListFragment() {
-    }
-
-    @NonNull
-    public static AlbumListFragment create(@NonNull ArrayList<Album> albumArrayList) {
+    static AlbumListFragment create(ArrayList<Album> albums) {
         Bundle arguments = new Bundle();
-        arguments.putParcelableArrayList(ARGUMENT_ALBUMS, albumArrayList);
+        arguments.putParcelableArrayList(ARGUMENT_ALBUMS, albums);
 
-        //noinspection deprecation
         AlbumListFragment fragment = new AlbumListFragment();
         fragment.setArguments(arguments);
         return fragment;
@@ -44,22 +39,33 @@ public final class AlbumListFragment extends ListFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        albums = getArguments().getParcelableArrayList(ARGUMENT_ALBUMS);
+        Bundle arguments = getArguments();
+        if (savedInstanceState != null) {
+            albums = savedInstanceState.getParcelableArrayList(ARGUMENT_ALBUMS);
+        }
+        if (albums == null && arguments != null) {
+            albums = arguments.getParcelableArrayList(ARGUMENT_ALBUMS);
+        }
+        if (albums != null) {
+            setListAdapter(new AlbumAdapter(getContext(), albums));
+        }
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        //albums is never null
-        //noinspection ConstantConditions
-        setListAdapter(new AlbumAdapter(getContext(), albums));
+        setEmptyText(getString(R.string.no_results));
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
         getActivity().setTitle(getString(R.string.album_list_fragment_title));
+    }
+
+    public void setOnClickListener(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @Override
@@ -68,6 +74,20 @@ public final class AlbumListFragment extends ListFragment {
                                 int position,
                                 long id) {
         showAlbumDetailFragment(albums.get(position));
+        if (onClickListener != null) {
+            onClickListener.onClick();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(ARGUMENT_ALBUMS, albums);
+    }
+
+    public void setAlbums(ArrayList<Album> albums) {
+        this.albums = albums;
+        setListAdapter(new AlbumAdapter(getContext(), albums));
     }
 
     private void showAlbumDetailFragment(@NonNull Album album) {
@@ -86,7 +106,7 @@ public final class AlbumListFragment extends ListFragment {
                 .commit();
     }
 
-    private final class AlbumAdapter extends ArrayAdapter<Album> {
+    private static final class AlbumAdapter extends ArrayAdapter<Album> {
 
         AlbumAdapter(@NonNull Context context,
                      @NonNull ArrayList<Album> albumArrayList) {
@@ -129,14 +149,20 @@ public final class AlbumListFragment extends ListFragment {
 
         }
 
+        @NonNull
+        private String getYear(@NonNull String releaseDate) {
+            if (releaseDate.length() > 3) {
+                return releaseDate.substring(0, 4);
+            }
+            return "";
+        }
+
     }
 
-    @NonNull
-    private String getYear(@NonNull String releaseDate) {
-        if (releaseDate.length() > 3) {
-            return releaseDate.substring(0, 4);
-        }
-        return "";
+    interface OnClickListener {
+
+        void onClick();
+
     }
 
 }

@@ -1,82 +1,156 @@
 package coop.nisc.intern2016.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
 import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.importer.Importer;
+import coop.nisc.intern2016.model.Album;
 import coop.nisc.intern2016.util.ParseAsset;
 
-public final class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public final class MainActivity extends AppCompatActivity implements ActionMode.Callback,
+                                                                     AlbumListFragment.OnClickListener {
 
     private static final String TAG = "MainActivity";
-    private static final String ARGUMENT_TOOLBAR = "toolbar";
-    private static final String ARGUMENT_SEARCHABLE = "searchable";
+    private static final String STATE_SEARCHING = "searching";
+    private static final String STATE_ACTION_MODE = "actionMode";
 
-    private ViewSwitcher viewSwitcher;
-    private Toolbar defaultToolbar;
-    private Toolbar searchToolbar;
-    private EditText searchText;
-    private boolean searchable = true;
+    private ActionMode actionMode;
+    private AlbumListFragment albumListFragment;
+    private ArrayList<Album> albums;
+    private SearchTask searchTask;
+    private boolean inActionMode;
+    private boolean searching;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        int toolbarId = 0;
         if (savedInstanceState != null) {
-            searchable = savedInstanceState.getBoolean(ARGUMENT_SEARCHABLE);
-            toolbarId = savedInstanceState.getInt(ARGUMENT_TOOLBAR);
+            searching = savedInstanceState.getBoolean(STATE_SEARCHING);
+            inActionMode = savedInstanceState.getBoolean(STATE_ACTION_MODE);
         }
-        setupViews(searchable);
-        configureToolbarState(toolbarId);
-    }
-
-
-    private void setupViews(boolean searchable) {
-        viewSwitcher = (ViewSwitcher) findViewById(R.id.view_switcher);
-
-        searchText = (EditText) findViewById(R.id.search_edit_text);
-
-        defaultToolbar = (Toolbar) findViewById(R.id.default_toolbar);
-        defaultToolbar.inflateMenu(R.menu.default_toolbar);
-        if (!searchable) {
-            disableSearch();
+        AlbumListFragment fragment = (AlbumListFragment) getSupportFragmentManager().findFragmentByTag(AlbumListFragment.TAG);
+        if (fragment == null) {
+            showAlbumListFragment(new ArrayList<>());
         } else {
-            showDefaultFragment();
+            albumListFragment = fragment;
         }
-
-        searchToolbar = (Toolbar) findViewById(R.id.search_toolbar);
-        searchToolbar.inflateMenu(R.menu.search_toolbar);
-
-        setToolbarListeners();
+        findViewById(R.id.fragment_container).setOnClickListener(v -> {
+            if (actionMode != null) {
+                actionMode.finish();
+            }
+        });
     }
 
-    private void disableSearch() {
-        defaultToolbar.getMenu().findItem(R.id.search_button).setVisible(false);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (searching) {
+            executeSearch();
+        }
+        if (inActionMode) {
+            actionMode = startSupportActionMode(this);
+        }
+        if (albumListFragment != null) {
+            albumListFragment.setOnClickListener(this);
+        }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (searching) {
+            searchTask.cancel(false);
+        }
+        if (albumListFragment != null) {
+            albumListFragment.setOnClickListener(null);
+        }
+    }
 
-    private void setToolbarListeners() {
-        defaultToolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search, menu);
+        return true;
+    }
 
-        searchToolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
-        searchToolbar.setNavigationOnClickListener(v -> onBackPressed());
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.search:
+                actionMode = startSupportActionMode(this);
+                return true;
+        }
+        return false;
+    }
 
-        searchText.setOnKeyListener((v, keyCode, event) -> {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(STATE_SEARCHING, searching);
+        outState.putBoolean(STATE_ACTION_MODE, inActionMode);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onClick() {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode,
+                                      Menu menu) {
+        mode.setCustomView(setupToolbarSearchText());
+        getMenuInflater().inflate(R.menu.search, menu);
+        setKeyboardVisible(true);
+        inActionMode = true;
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode,
+                                       Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode,
+                                       MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.search:
+                performSearch();
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        setKeyboardVisible(false);
+        inActionMode = false;
+    }
+
+    @SuppressLint("InflateParams")
+    private View setupToolbarSearchText() {
+        EditText toolbarSearchText = (EditText) getLayoutInflater().inflate(R.layout.toolbar_search_text, null);
+        toolbarSearchText.setOnKeyListener((view, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     performSearch();
@@ -85,92 +159,71 @@ public final class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-    }
-
-    private void configureToolbarState(int toolbarId) {
-        if (viewSwitcher.getNextView().getId() == toolbarId) {
-            viewSwitcher.showNext();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        Log.d(TAG, viewSwitcher.getCurrentView().toString());
-        if (viewSwitcher.getCurrentView().equals(defaultToolbar)) {
-            super.onBackPressed();
-        } else {
-            switchToolbar();
-        }
-    }
-
-    private void switchToolbar() {
-        viewSwitcher.showNext();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.search_button:
-                switchToolbar();
-                searchText.setText("");
-                return true;
-            case R.id.perform_search_button:
-                performSearch();
-                return true;
-        }
-        return false;
+        toolbarSearchText.requestFocus();
+        return toolbarSearchText;
     }
 
     private void performSearch() {
-        hideSoftKeyboard();
-        switchToolbar();
-        disableSearch();
-        showAlbumDetailsFragment(searchText.getText().toString());
-        searchable = false;
+        if (searching) {
+            searchTask.cancel(true);
+        }
+        executeSearch();
+        actionMode.finish();
     }
 
-    private void hideSoftKeyboard() {
+    private void executeSearch() {
+        searchTask = new SearchTask();
+        searchTask.execute();
+    }
+
+    public void showAlbumListFragment(@Nullable ArrayList<Album> albums) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        albumListFragment = (albums != null ? AlbumListFragment.create(albums) : new AlbumListFragment());
+        albumListFragment.setOnClickListener(this);
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, albumListFragment, AlbumListFragment.TAG)
+                .commit();
+    }
+
+    private void setKeyboardVisible(boolean visible) {
         View view = getCurrentFocus();
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (view != null) {
-            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-                    .hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (visible) {
+                inputMethodManager.showSoftInput(view, 0);
+            } else {
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         }
     }
 
-    private void showDefaultFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag(DefaultFragment.TAG);
-        if (fragment == null) {
-            fragment = DefaultFragment.create();
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, fragment, DefaultFragment.TAG)
-                    .commit();
+    private final class SearchTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showAlbumListFragment(null);
+            searching = true;
         }
-    }
 
-    private void showAlbumDetailsFragment(@NonNull String query) {
-        Log.d(TAG, query);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag(AlbumListFragment.TAG);
-        if (fragment == null) {
-            fragment = AlbumListFragment.create(Importer.importAlbums(ParseAsset.parse(this,
-                                                                                       "album_search_query_result.txt")));
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment, AlbumListFragment.TAG)
-                    .commit();
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Background task was interrupted");
+            }
+            albums = Importer.importAlbums(ParseAsset.parse(getApplicationContext(), "album_search_query_result.txt"));
+            return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            albumListFragment.setAlbums(albums);
+            searching = false;
+        }
+
     }
 
-    @Override
-    public void setTitle(CharSequence title) {
-        ((TextView) findViewById(R.id.activity_title)).setText(title);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(ARGUMENT_TOOLBAR, viewSwitcher.getCurrentView().getId());
-        outState.putBoolean(ARGUMENT_SEARCHABLE, searchable);
-        super.onSaveInstanceState(outState);
-    }
 }
