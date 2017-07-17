@@ -26,7 +26,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
     private static final String TAG = "MainActivity";
     private static final String STATE_SEARCHING = "searching";
     private static final String STATE_ACTION_MODE = "actionMode";
-    private static final String ARGUMENT_QUERY = "query";
+    private static final String EXTRA_QUERY = "query";
 
     private ActionMode actionMode;
     private AlbumListFragment albumListFragment;
@@ -42,7 +42,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         if (savedInstanceState != null) {
             searching = savedInstanceState.getBoolean(STATE_SEARCHING);
             inActionMode = savedInstanceState.getBoolean(STATE_ACTION_MODE);
-            query = savedInstanceState.getString(ARGUMENT_QUERY, query);
+            query = savedInstanceState.getString(EXTRA_QUERY, query);
         }
         findViewById(R.id.fragment_container).setOnClickListener(v -> exitActionMode());
     }
@@ -100,7 +100,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_SEARCHING, searching);
         outState.putBoolean(STATE_ACTION_MODE, inActionMode);
-        outState.putString(ARGUMENT_QUERY, query);
+        outState.putString(EXTRA_QUERY, query);
     }
 
     @Override
@@ -175,7 +175,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
 
     private void showAlbumListFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        albumListFragment = (new AlbumListFragment());
+        albumListFragment = new AlbumListFragment();
         albumListFragment.setAlbumSelectedCallback(this);
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, albumListFragment, AlbumListFragment.TAG)

@@ -22,7 +22,7 @@ public final class AlbumListFragment extends ListFragment {
 
     public static final String TAG = "AlbumListFragment";
 
-    private static final String ARGUMENT_ALBUMS = "albums";
+    private static final String STATE_ALBUMS = "albums";
 
     private ArrayList<Album> albums;
     private AlbumSelectedCallback albumSelectedCallback;
@@ -32,10 +32,10 @@ public final class AlbumListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
         if (savedInstanceState != null) {
-            albums = savedInstanceState.getParcelableArrayList(ARGUMENT_ALBUMS);
+            albums = savedInstanceState.getParcelableArrayList(STATE_ALBUMS);
         }
         if (albums == null && arguments != null) {
-            albums = arguments.getParcelableArrayList(ARGUMENT_ALBUMS);
+            albums = arguments.getParcelableArrayList(STATE_ALBUMS);
         }
         if (albums != null) {
             setListAdapter(new AlbumAdapter(getContext(), albums));
@@ -57,7 +57,7 @@ public final class AlbumListFragment extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(ARGUMENT_ALBUMS, albums);
+        outState.putParcelableArrayList(STATE_ALBUMS, albums);
     }
 
     @Override
