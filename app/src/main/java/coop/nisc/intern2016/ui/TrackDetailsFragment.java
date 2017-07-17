@@ -41,6 +41,15 @@ public final class TrackDetailsFragment extends Fragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup parent,
+                             Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_track_details, parent, false);
+        new TrackDetailViewController(root, track);
+        return root;
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu,
                                     MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -51,15 +60,6 @@ public final class TrackDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(getString(R.string.track_details_fragment_title));
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup parent,
-                             Bundle savedInstanceState) {
-        View root = LayoutInflater.from(getContext()).inflate(R.layout.track_details, parent, false);
-        new TrackDetailViewController(root, track);
-        return root;
     }
 
 }

@@ -1,10 +1,9 @@
 package coop.nisc.intern2016.ui;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -13,7 +12,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.importer.Importer;
@@ -23,16 +21,17 @@ import coop.nisc.intern2016.util.ParseAsset;
 import java.util.ArrayList;
 
 public final class MainActivity extends AppCompatActivity implements ActionMode.Callback,
-                                                                     AlbumListFragment.OnClickListener {
+                                                                     AlbumListFragment.AlbumSelectedCallback {
 
     private static final String TAG = "MainActivity";
     private static final String STATE_SEARCHING = "searching";
     private static final String STATE_ACTION_MODE = "actionMode";
+    private static final String ARGUMENT_QUERY = "query";
 
     private ActionMode actionMode;
     private AlbumListFragment albumListFragment;
-    private ArrayList<Album> albums;
     private SearchTask searchTask;
+    private String query = "";
     private boolean inActionMode;
     private boolean searching;
 
@@ -43,31 +42,24 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         if (savedInstanceState != null) {
             searching = savedInstanceState.getBoolean(STATE_SEARCHING);
             inActionMode = savedInstanceState.getBoolean(STATE_ACTION_MODE);
+            query = savedInstanceState.getString(ARGUMENT_QUERY, query);
         }
-        AlbumListFragment fragment = (AlbumListFragment) getSupportFragmentManager().findFragmentByTag(AlbumListFragment.TAG);
-        if (fragment == null) {
-            showAlbumListFragment(new ArrayList<>());
-        } else {
-            albumListFragment = fragment;
-        }
-        findViewById(R.id.fragment_container).setOnClickListener(v -> {
-            if (actionMode != null) {
-                actionMode.finish();
-            }
-        });
+        findViewById(R.id.fragment_container).setOnClickListener(v -> exitActionMode());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (searching) {
-            executeSearch();
+        albumListFragment = (AlbumListFragment) getSupportFragmentManager().findFragmentByTag(AlbumListFragment.TAG);
+        if (albumListFragment != null) {
+            albumListFragment.setAlbumSelectedCallback(this);
+            hideNoResultsView();
         }
         if (inActionMode) {
             actionMode = startSupportActionMode(this);
         }
-        if (albumListFragment != null) {
-            albumListFragment.setOnClickListener(this);
+        if (searching) {
+            executeSearch();
         }
     }
 
@@ -78,7 +70,11 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
             searchTask.cancel(false);
         }
         if (albumListFragment != null) {
-            albumListFragment.setOnClickListener(null);
+            albumListFragment.setAlbumSelectedCallback(null);
+        }
+        if (inActionMode) {
+            exitActionMode();
+            inActionMode = true;
         }
     }
 
@@ -101,16 +97,15 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_SEARCHING, searching);
         outState.putBoolean(STATE_ACTION_MODE, inActionMode);
-        super.onSaveInstanceState(outState);
+        outState.putString(ARGUMENT_QUERY, query);
     }
 
     @Override
-    public void onClick() {
-        if (actionMode != null) {
-            actionMode.finish();
-        }
+    public void onAlbumClicked() {
+        exitActionMode();
     }
 
     @Override
@@ -118,15 +113,15 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
                                       Menu menu) {
         mode.setCustomView(setupToolbarSearchText());
         getMenuInflater().inflate(R.menu.search, menu);
-        setKeyboardVisible(true);
         inActionMode = true;
         return true;
     }
 
+
     @Override
     public boolean onPrepareActionMode(ActionMode mode,
                                        Menu menu) {
-        return false;
+        return true;
     }
 
     @Override
@@ -143,13 +138,14 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        setKeyboardVisible(false);
+        query = ((EditText) mode.getCustomView()).getText().toString();
         inActionMode = false;
     }
 
     @SuppressLint("InflateParams")
+    @NonNull
     private View setupToolbarSearchText() {
-        EditText toolbarSearchText = (EditText) getLayoutInflater().inflate(R.layout.toolbar_search_text, null);
+        EditText toolbarSearchText = (EditText) getLayoutInflater().inflate(R.layout.view_toolbar_search_text, null);
         toolbarSearchText.setOnKeyListener((view, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -159,7 +155,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
             }
             return false;
         });
-        toolbarSearchText.requestFocus();
+        toolbarSearchText.setText(query);
         return toolbarSearchText;
     }
 
@@ -169,6 +165,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         }
         executeSearch();
         actionMode.finish();
+        hideNoResultsView();
     }
 
     private void executeSearch() {
@@ -176,50 +173,47 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         searchTask.execute();
     }
 
-    public void showAlbumListFragment(@Nullable ArrayList<Album> albums) {
+    private void showAlbumListFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        albumListFragment = (albums != null ? AlbumListFragment.create(albums) : new AlbumListFragment());
-        albumListFragment.setOnClickListener(this);
+        albumListFragment = (new AlbumListFragment());
+        albumListFragment.setAlbumSelectedCallback(this);
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, albumListFragment, AlbumListFragment.TAG)
                 .commit();
     }
 
-    private void setKeyboardVisible(boolean visible) {
-        View view = getCurrentFocus();
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (view != null) {
-            if (visible) {
-                inputMethodManager.showSoftInput(view, 0);
-            } else {
-                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
+    private void hideNoResultsView() {
+        (findViewById(R.id.no_results)).setVisibility(View.GONE);
+    }
+
+    private void exitActionMode() {
+        if (actionMode != null) {
+            actionMode.finish();
         }
     }
 
-    private final class SearchTask extends AsyncTask<Void, Void, Void> {
+    private final class SearchTask extends AsyncTask<Void, Void, ArrayList<Album>> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showAlbumListFragment(null);
+            showAlbumListFragment();
             searching = true;
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected ArrayList<Album> doInBackground(Void... params) {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
                 Log.e(TAG, "Background task was interrupted");
             }
-            albums = Importer.importAlbums(ParseAsset.parse(getApplicationContext(), "album_search_query_result.txt"));
-            return null;
+            return Importer.importAlbums(ParseAsset.parse(getApplicationContext(), "album_search_query_result.txt"));
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(ArrayList<Album> albums) {
+            super.onPostExecute(albums);
             albumListFragment.setAlbums(albums);
             searching = false;
         }

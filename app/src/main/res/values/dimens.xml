@@ -6,6 +6,7 @@
     <dimen name="default_space">16dp</dimen>
 
     <!--View Sizes-->
+    <dimen name="flat">0dp</dimen>
     <dimen name="line_width">1px</dimen>
     <dimen name="max_track_number_width">19dp</dimen>
     <dimen name="medium_size_word_width_by">24dp</dimen>
@@ -21,6 +22,5 @@
     <dimen name="small_text_size">14sp</dimen>
     <dimen name="medium_text_size">16sp</dimen>
     <dimen name="large_text_size">24sp</dimen>
-    <dimen name="flat">0dp</dimen>
 
 </resources>

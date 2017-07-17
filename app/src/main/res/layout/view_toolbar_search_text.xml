@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:hint="@string/album_search_hint"
-    android:imeOptions="actionSearch"
+    android:imeOptions="actionSearch|flagNoExtractUi"
     android:inputType="textNoSuggestions"
     android:textColor="@color/white"
     android:textColorHint="@color/white" />

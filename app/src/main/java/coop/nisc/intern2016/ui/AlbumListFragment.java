@@ -25,16 +25,7 @@ public final class AlbumListFragment extends ListFragment {
     private static final String ARGUMENT_ALBUMS = "albums";
 
     private ArrayList<Album> albums;
-    private OnClickListener onClickListener;
-
-    static AlbumListFragment create(ArrayList<Album> albums) {
-        Bundle arguments = new Bundle();
-        arguments.putParcelableArrayList(ARGUMENT_ALBUMS, albums);
-
-        AlbumListFragment fragment = new AlbumListFragment();
-        fragment.setArguments(arguments);
-        return fragment;
-    }
+    private AlbumSelectedCallback albumSelectedCallback;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,26 +48,10 @@ public final class AlbumListFragment extends ListFragment {
         setEmptyText(getString(R.string.no_results));
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
         getActivity().setTitle(getString(R.string.album_list_fragment_title));
-    }
-
-    public void setOnClickListener(OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-    }
-
-    @Override
-    public void onListItemClick(ListView listView,
-                                View view,
-                                int position,
-                                long id) {
-        showAlbumDetailFragment(albums.get(position));
-        if (onClickListener != null) {
-            onClickListener.onClick();
-        }
     }
 
     @Override
@@ -85,9 +60,15 @@ public final class AlbumListFragment extends ListFragment {
         outState.putParcelableArrayList(ARGUMENT_ALBUMS, albums);
     }
 
-    public void setAlbums(ArrayList<Album> albums) {
-        this.albums = albums;
-        setListAdapter(new AlbumAdapter(getContext(), albums));
+    @Override
+    public void onListItemClick(ListView listView,
+                                View view,
+                                int position,
+                                long id) {
+        showAlbumDetailFragment(albums.get(position));
+        if (albumSelectedCallback != null) {
+            albumSelectedCallback.onAlbumClicked();
+        }
     }
 
     private void showAlbumDetailFragment(@NonNull Album album) {
@@ -104,6 +85,15 @@ public final class AlbumListFragment extends ListFragment {
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(TAG)
                 .commit();
+    }
+
+    public void setAlbumSelectedCallback(@Nullable AlbumSelectedCallback albumSelectedCallback) {
+        this.albumSelectedCallback = albumSelectedCallback;
+    }
+
+    public void setAlbums(@NonNull ArrayList<Album> albums) {
+        this.albums = albums;
+        setListAdapter(new AlbumAdapter(getContext(), albums));
     }
 
     private static final class AlbumAdapter extends ArrayAdapter<Album> {
@@ -135,6 +125,14 @@ public final class AlbumListFragment extends ListFragment {
             return convertView;
         }
 
+        @NonNull
+        private String getYear(@NonNull String releaseDate) {
+            if (releaseDate.length() > 3) {
+                return releaseDate.substring(0, 4);
+            }
+            return "";
+        }
+
         private final class ViewHolder {
 
             final TextView collectionName;
@@ -149,19 +147,11 @@ public final class AlbumListFragment extends ListFragment {
 
         }
 
-        @NonNull
-        private String getYear(@NonNull String releaseDate) {
-            if (releaseDate.length() > 3) {
-                return releaseDate.substring(0, 4);
-            }
-            return "";
-        }
-
     }
 
-    interface OnClickListener {
+    interface AlbumSelectedCallback {
 
-        void onClick();
+        void onAlbumClicked();
 
     }
 

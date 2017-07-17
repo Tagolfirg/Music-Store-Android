@@ -45,6 +45,18 @@ public final class AlbumDetailsFragment extends Fragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup parent,
+                             Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_album_details, parent, false);
+        //album is never null
+        //noinspection ConstantConditions
+        AlbumDetailViewController controller = new AlbumDetailViewController(root, album);
+        controller.setOnClickListener(this::showTrackDetailsFragment);
+        return root;
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu,
                                     MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -55,18 +67,6 @@ public final class AlbumDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle(getString(R.string.album_details_fragment_title));
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup parent,
-                             Bundle savedInstanceState) {
-        View root = LayoutInflater.from(getContext()).inflate(R.layout.album_details, parent, false);
-        //album is never null
-        //noinspection ConstantConditions
-        AlbumDetailViewController controller = new AlbumDetailViewController(root, album);
-        controller.setOnClickListener(this::showTrackDetailsFragment);
-        return root;
     }
 
     private void showTrackDetailsFragment(@NonNull Track track) {
