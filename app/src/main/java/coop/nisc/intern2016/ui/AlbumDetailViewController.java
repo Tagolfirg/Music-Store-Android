@@ -7,11 +7,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import coop.nisc.intern2016.R;
-import coop.nisc.intern2016.importer.Importer;
 import coop.nisc.intern2016.model.Album;
 import coop.nisc.intern2016.model.Explicitness;
 import coop.nisc.intern2016.model.Track;
-import coop.nisc.intern2016.util.ParseAsset;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,13 +36,11 @@ final class AlbumDetailViewController {
         ((TextView) view.findViewById(R.id.album_detail_explicitness))
                 .setText(Explicitness.getType(album.collectionExplicitness).getDisplayString(context));
 
-        ArrayList<Track> tracks = Importer.importTracks(ParseAsset.parse(context,
-                                                                         "track_search_query_result.txt"));
         ((TextView) view.findViewById(R.id.album_detail_year_and_tracks))
                 .setText(context.getResources().getQuantityString(
-                        R.plurals.year_and_track_count, tracks.size(), getYear(album.releaseDate), tracks.size()));
+                        R.plurals.year_and_track_count, album.tracks.size(), getYear(album.releaseDate), album.tracks.size()));
 
-        createTrackListViews((LinearLayout) view.findViewById(R.id.album_detail_track_list), tracks);
+        createTrackListViews((LinearLayout) view.findViewById(R.id.album_detail_track_list), album.tracks);
     }
 
     @NonNull

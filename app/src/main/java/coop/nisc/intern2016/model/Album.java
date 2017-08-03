@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public final class Album implements Parcelable {
 
@@ -22,13 +23,15 @@ public final class Album implements Parcelable {
 
     @NonNull public final String artistName;
     @NonNull public final String collectionExplicitness;
-    private final String collectionId;
+    @NonNull public final String collectionId;
     @NonNull public final String collectionName;
     private final BigDecimal collectionPrice;
     private final String country;
     private final String primaryGenreName;
     @NonNull public final String releaseDate;
     private final int trackCount;
+
+    @NonNull public ArrayList<Track> tracks = new ArrayList<>();
 
     public Album(@NonNull String artistName,
                  @NonNull String collectionExplicitness,
@@ -60,6 +63,10 @@ public final class Album implements Parcelable {
         primaryGenreName = parcel.readString();
         releaseDate = parcel.readString();
         trackCount = parcel.readInt();
+
+        // The type is guaranteed to be ArrayList<Track>
+        // noinspection unchecked
+        tracks = parcel.readArrayList(null);
     }
 
     @Override
@@ -79,6 +86,7 @@ public final class Album implements Parcelable {
         dest.writeString(primaryGenreName);
         dest.writeString(releaseDate);
         dest.writeInt(trackCount);
+        dest.writeList(tracks);
     }
 
 }

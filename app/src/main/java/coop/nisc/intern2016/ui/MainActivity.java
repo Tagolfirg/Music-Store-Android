@@ -13,17 +13,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.importer.Importer;
 import coop.nisc.intern2016.model.Album;
-import coop.nisc.intern2016.util.ParseAsset;
+import coop.nisc.intern2016.model.SearchUrl;
+import coop.nisc.intern2016.networking.AlbumSearchService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public final class MainActivity extends AppCompatActivity implements ActionMode.Callback,
                                                                      AlbumListFragment.AlbumSelectedCallback {
 
-    private static final String TAG = "MainActivity";
     private static final String STATE_SEARCHING = "searching";
     private static final String STATE_ACTION_MODE = "actionMode";
     private static final String STATE_QUERY = "query";
@@ -182,6 +184,18 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
                 .commit();
     }
 
+    private void setEmptyText(String message) {
+        if (albumListFragment == null) {
+            ((TextView) findViewById(R.id.no_results)).setText(message);
+        } else {
+            if (albumListFragment.isResumed()) {
+                albumListFragment.setEmptyText(message);
+            } else {
+                albumListFragment.emptyText = message;
+            }
+        }
+    }
+
     private void hideNoResultsView() {
         (findViewById(R.id.no_results)).setVisibility(View.GONE);
     }
@@ -204,11 +218,12 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         @Override
         protected ArrayList<Album> doInBackground(Void... params) {
             try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Background task was interrupted");
+                return Importer.importAlbums(AlbumSearchService.downloadUrl(new SearchUrl(query).getFullAddress()));
+            } catch (IOException userException) {
+                Log.e("MainActivity", "doInBackground: " + userException.getLocalizedMessage());
+                setEmptyText(userException.getLocalizedMessage());
+                return new ArrayList<>();
             }
-            return Importer.importAlbums(ParseAsset.parse(getApplicationContext(), "album_search_query_result.txt"));
         }
 
         @Override

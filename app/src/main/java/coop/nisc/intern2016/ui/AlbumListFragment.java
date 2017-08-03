@@ -23,19 +23,22 @@ public final class AlbumListFragment extends ListFragment {
     public static final String TAG = "AlbumListFragment";
 
     private static final String STATE_ALBUMS = "albums";
+    private static final String STATE_EMPTY_TEXT = "emptyText";
+
 
     private ArrayList<Album> albums;
     private AlbumSelectedCallback albumSelectedCallback;
 
+    String emptyText;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle arguments = getArguments();
         if (savedInstanceState != null) {
             albums = savedInstanceState.getParcelableArrayList(STATE_ALBUMS);
-        }
-        if (albums == null && arguments != null) {
-            albums = arguments.getParcelableArrayList(STATE_ALBUMS);
+            emptyText = savedInstanceState.getString(STATE_EMPTY_TEXT);
+        } else {
+            emptyText = getString(R.string.no_results);
         }
         if (albums != null) {
             setListAdapter(new AlbumAdapter(getContext(), albums));
@@ -45,12 +48,12 @@ public final class AlbumListFragment extends ListFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setEmptyText(getString(R.string.no_results));
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        super.setEmptyText(emptyText);
         getActivity().setTitle(getString(R.string.album_list_fragment_title));
     }
 
@@ -58,6 +61,7 @@ public final class AlbumListFragment extends ListFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STATE_ALBUMS, albums);
+        outState.putString(STATE_EMPTY_TEXT, emptyText);
     }
 
     @Override
@@ -69,6 +73,12 @@ public final class AlbumListFragment extends ListFragment {
         if (albumSelectedCallback != null) {
             albumSelectedCallback.onAlbumClicked();
         }
+    }
+
+    @Override
+    public void setEmptyText(CharSequence emptyText) {
+        super.setEmptyText(emptyText);
+        this.emptyText = (String) emptyText;
     }
 
     private void showAlbumDetailFragment(@NonNull Album album) {
