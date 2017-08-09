@@ -3,6 +3,7 @@ package coop.nisc.intern2016.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,9 +30,9 @@ public final class Album implements Parcelable {
     private final String country;
     private final String primaryGenreName;
     @NonNull public final String releaseDate;
-    private final int trackCount;
+    public final int trackCount;
 
-    @NonNull public ArrayList<Track> tracks = new ArrayList<>();
+    @Nullable public ArrayList<Track> tracks;
 
     public Album(@NonNull String artistName,
                  @NonNull String collectionExplicitness,

@@ -25,7 +25,6 @@ public final class AlbumListFragment extends ListFragment {
     private static final String STATE_ALBUMS = "albums";
     private static final String STATE_EMPTY_TEXT = "emptyText";
 
-
     private ArrayList<Album> albums;
     private AlbumSelectedCallback albumSelectedCallback;
 
@@ -69,9 +68,8 @@ public final class AlbumListFragment extends ListFragment {
                                 View view,
                                 int position,
                                 long id) {
-        showAlbumDetailFragment(albums.get(position));
         if (albumSelectedCallback != null) {
-            albumSelectedCallback.onAlbumClicked();
+            albumSelectedCallback.onAlbumClicked(albums.get(position));
         }
     }
 
@@ -81,18 +79,15 @@ public final class AlbumListFragment extends ListFragment {
         this.emptyText = (String) emptyText;
     }
 
-    private void showAlbumDetailFragment(@NonNull Album album) {
+    void showAlbumDetailFragment(@NonNull Album album) {
         FragmentManager fragmentManager = getFragmentManager();
-
-        //position will always point to an album, not to a null
-        //noinspection ConstantConditions
         Fragment fragment = AlbumDetailsFragment.create(album);
         fragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_right,
                                      R.anim.exit_to_left,
                                      R.anim.enter_from_left,
                                      R.anim.exit_to_right)
-                .replace(R.id.fragment_container, fragment)
+                .replace(R.id.fragment_container, fragment, AlbumDetailsFragment.TAG)
                 .addToBackStack(TAG)
                 .commit();
     }
@@ -161,7 +156,7 @@ public final class AlbumListFragment extends ListFragment {
 
     interface AlbumSelectedCallback {
 
-        void onAlbumClicked();
+        void onAlbumClicked(Album album);
 
     }
 

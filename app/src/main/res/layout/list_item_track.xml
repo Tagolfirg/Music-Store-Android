@@ -19,9 +19,9 @@
 
         <TextView
             android:id="@+id/track_list_track_number"
-            android:layout_width="@dimen/max_track_number_width"
+            android:layout_width="@dimen/three_digit_number"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|end"
             android:textSize="@dimen/medium_text_size" />
 
         <TextView

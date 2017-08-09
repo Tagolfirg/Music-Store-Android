@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -17,8 +18,9 @@ import android.widget.TextView;
 import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.importer.Importer;
 import coop.nisc.intern2016.model.Album;
-import coop.nisc.intern2016.model.SearchUrl;
-import coop.nisc.intern2016.networking.AlbumSearchService;
+import coop.nisc.intern2016.model.MusicUrl;
+import coop.nisc.intern2016.model.Track;
+import coop.nisc.intern2016.networking.MusicNetworkCall;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,15 +29,19 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
                                                                      AlbumListFragment.AlbumSelectedCallback {
 
     private static final String STATE_SEARCHING = "searching";
+    private static final String STATE_LOOKING = "looking";
     private static final String STATE_ACTION_MODE = "actionMode";
     private static final String STATE_QUERY = "query";
 
     private ActionMode actionMode;
     private AlbumListFragment albumListFragment;
+    private AlbumDetailsFragment albumDetailsFragment;
     private SearchTask searchTask;
+    private LookupTask lookupTask;
     private String query = "";
     private boolean inActionMode;
     private boolean searching;
+    private boolean looking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         setContentView(R.layout.activity_main);
         if (savedInstanceState != null) {
             searching = savedInstanceState.getBoolean(STATE_SEARCHING);
+            looking = savedInstanceState.getBoolean(STATE_LOOKING);
             inActionMode = savedInstanceState.getBoolean(STATE_ACTION_MODE);
             query = savedInstanceState.getString(STATE_QUERY, query);
         }
@@ -52,7 +59,12 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
     @Override
     protected void onResume() {
         super.onResume();
-        albumListFragment = (AlbumListFragment) getSupportFragmentManager().findFragmentByTag(AlbumListFragment.TAG);
+        registerFragments();
+        if (searching) {
+            executeSearch();
+        } else if (looking && albumDetailsFragment != null) {
+            executeLookup(albumDetailsFragment.album);
+        }
         if (albumListFragment != null) {
             albumListFragment.setAlbumSelectedCallback(this);
             hideNoResultsView();
@@ -60,16 +72,16 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         if (inActionMode) {
             actionMode = startSupportActionMode(this);
         }
-        if (searching) {
-            executeSearch();
-        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (searching) {
-            searchTask.cancel(false);
+            searchTask.cancel(true);
+        }
+        if (looking) {
+            lookupTask.cancel(true);
         }
         if (albumListFragment != null) {
             albumListFragment.setAlbumSelectedCallback(null);
@@ -101,13 +113,15 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_SEARCHING, searching);
+        outState.putBoolean(STATE_LOOKING, looking);
         outState.putBoolean(STATE_ACTION_MODE, inActionMode);
         outState.putString(STATE_QUERY, query);
     }
 
     @Override
-    public void onAlbumClicked() {
+    public void onAlbumClicked(Album album) {
         exitActionMode();
+        performLookup(album);
     }
 
     @Override
@@ -118,7 +132,6 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         inActionMode = true;
         return true;
     }
-
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode,
@@ -161,6 +174,12 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         return toolbarSearchText;
     }
 
+    private void registerFragments() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        albumListFragment = (AlbumListFragment) fragmentManager.findFragmentByTag(AlbumListFragment.TAG);
+        albumDetailsFragment = (AlbumDetailsFragment) fragmentManager.findFragmentByTag(AlbumDetailsFragment.TAG);
+    }
+
     private void performSearch() {
         if (searching) {
             searchTask.cancel(true);
@@ -175,6 +194,21 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         searchTask.execute();
     }
 
+    private void performLookup(@NonNull Album album) {
+        if (looking && lookupTask != null) {
+            lookupTask.cancel(true);
+        }
+        albumListFragment.showAlbumDetailFragment(album);
+        if (!(album.tracks != null && album.tracks.size() > 0)) {
+            executeLookup(album);
+        }
+    }
+
+    private void executeLookup(@NonNull Album album) {
+        lookupTask = new LookupTask();
+        lookupTask.execute(album);
+    }
+
     private void showAlbumListFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         albumListFragment = new AlbumListFragment();
@@ -184,15 +218,11 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
                 .commit();
     }
 
-    private void setEmptyText(String message) {
+    private void setEmptyText(@NonNull String message) {
         if (albumListFragment == null) {
             ((TextView) findViewById(R.id.no_results)).setText(message);
         } else {
-            if (albumListFragment.isResumed()) {
-                albumListFragment.setEmptyText(message);
-            } else {
-                albumListFragment.emptyText = message;
-            }
+            albumListFragment.setEmptyText(message);
         }
     }
 
@@ -208,6 +238,8 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
 
     private final class SearchTask extends AsyncTask<Void, Void, ArrayList<Album>> {
 
+        private static final String TAG = "SearchTask";
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -218,10 +250,11 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         @Override
         protected ArrayList<Album> doInBackground(Void... params) {
             try {
-                return Importer.importAlbums(AlbumSearchService.downloadUrl(new SearchUrl(query).getFullAddress()));
-            } catch (IOException userException) {
-                Log.e("MainActivity", "doInBackground: " + userException.getLocalizedMessage());
-                setEmptyText(userException.getLocalizedMessage());
+                return Importer.importAlbums(MusicNetworkCall.downloadUrl(new MusicUrl(query,
+                                                                                       MusicUrl.ALBUM).toString()));
+            } catch (IOException exception) {
+                Log.e(TAG, "doInBackground: Error while getting albums " + exception.getLocalizedMessage());
+                setEmptyText(exception.getLocalizedMessage());
                 return new ArrayList<>();
             }
         }
@@ -231,6 +264,49 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
             super.onPostExecute(albums);
             albumListFragment.setAlbums(albums);
             searching = false;
+        }
+
+    }
+
+    private final class LookupTask extends AsyncTask<Album, Void, ArrayList<Track>> {
+
+        private static final String TAG = "LookupTask";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            looking = true;
+        }
+
+        @Override
+        protected ArrayList<Track> doInBackground(Album... params) {
+            Album album = params[0];
+            if (hasData(album.tracks)) {
+                return album.tracks;
+            }
+            ArrayList<Track> tracks = new ArrayList<>();
+            try {
+                tracks = Importer.importTracks(MusicNetworkCall.downloadUrl(
+                        new MusicUrl(String.valueOf(album.collectionId), MusicUrl.SONG).toString()));
+                album.tracks = tracks;
+            } catch (IOException exception) {
+                Log.e(TAG, "doInBackground: Error while getting tracks " + exception.getLocalizedMessage());
+            }
+            return tracks;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Track> tracks) {
+            super.onPostExecute(tracks);
+            registerFragments();
+            if (albumDetailsFragment != null) {
+                albumDetailsFragment.setTracks(null, tracks);
+            }
+            looking = false;
+        }
+
+        private boolean hasData(@Nullable ArrayList<Track> tracks) {
+            return (tracks != null && tracks.size() > 0);
         }
 
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/album_detail_scroll_view"
+<ScrollView android:id="@+id/album_detail_scroll_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -14,8 +14,8 @@
             android:layout_width="@dimen/album_details_artwork_size"
             android:layout_height="@dimen/album_details_artwork_size"
             android:layout_marginBottom="@dimen/default_space"
-            android:layout_marginTop="@dimen/default_space"
             android:layout_marginStart="@dimen/default_space"
+            android:layout_marginTop="@dimen/default_space"
             android:background="@color/colorPrimaryDark"
             android:contentDescription="@string/album_image" />
 
@@ -46,9 +46,9 @@
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="@dimen/one_line_tile_height"
-            android:layout_marginStart="@dimen/small_space"
+            android:layout_below="@id/album_detail_artist"
             android:layout_marginEnd="@dimen/small_space"
-            android:layout_below="@id/album_detail_artist">
+            android:layout_marginStart="@dimen/small_space">
 
             <TextView
                 android:id="@+id/album_detail_explicitness"
@@ -63,20 +63,40 @@
                 android:id="@+id/album_detail_year_and_tracks"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/small_space"
-                android:gravity="center_vertical"
                 android:layout_alignParentStart="true"
+                android:layout_marginStart="@dimen/small_space"
                 android:layout_toStartOf="@id/album_detail_explicitness"
+                android:gravity="center_vertical"
                 android:textSize="@dimen/medium_text_size" />
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/album_detail_track_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/album_detail_extra_info"
-            android:orientation="vertical" />
+            <ProgressBar
+                android:id="@+id/loading_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/album_detail_extra_info"
+                android:indeterminateOnly="true"
+                android:paddingTop="@dimen/album_details_no_results_size"
+                android:paddingBottom="@dimen/album_details_no_results_size" />
+
+            <TextView
+                android:id="@+id/no_track_results"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/album_detail_extra_info"
+                android:gravity="center"
+                android:paddingTop="@dimen/album_details_no_results_size"
+                android:paddingBottom="@dimen/album_details_no_results_size"
+                android:text="@string/no_track_results"/>
+
+            <LinearLayout
+                android:id="@+id/album_detail_track_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/album_detail_extra_info"
+                android:orientation="vertical" />
 
     </RelativeLayout>
+
 </ScrollView>

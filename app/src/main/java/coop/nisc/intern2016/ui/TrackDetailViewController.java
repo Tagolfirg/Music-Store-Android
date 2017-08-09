@@ -38,7 +38,7 @@ final class TrackDetailViewController {
                 .setText(getFormattedTrackDuration(track.trackTimeMillis));
 
         ((TextView) view.findViewById(R.id.track_details_track_price))
-                .setText(context.getString(R.string.price, track.trackPrice));
+                .setText(context.getString(R.string.price, getFormattedTrackPrice(track.trackPrice.doubleValue())));
 
         ((TextView) view.findViewById(R.id.track_details_primary_genre))
                 .setText(track.primaryGenreName);
@@ -52,6 +52,10 @@ final class TrackDetailViewController {
         return (trackTimeMillis < TimeUnit.HOURS.toMillis(1) ?
                 new SimpleDateFormat("m:ss", Locale.getDefault()).format(new Date(trackTimeMillis)) :
                 new SimpleDateFormat("H:mm:ss", Locale.getDefault()).format(new Date(trackTimeMillis)));
+    }
+
+    @NonNull String getFormattedTrackPrice(double trackPrice) {
+        return trackPrice <= 0 ? "0.00" : String.valueOf(trackPrice);
     }
 
 }
