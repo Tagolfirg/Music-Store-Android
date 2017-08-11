@@ -1,5 +1,6 @@
 package coop.nisc.intern2016.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ public final class Album implements Parcelable {
     };
 
     @NonNull public final String artistName;
+    @NonNull public final String artworkUrl60;
     @NonNull public final String collectionExplicitness;
     @NonNull public final String collectionId;
     @NonNull public final String collectionName;
@@ -33,8 +35,10 @@ public final class Album implements Parcelable {
     public final int trackCount;
 
     @Nullable public ArrayList<Track> tracks;
+    @Nullable public Bitmap artwork;
 
     public Album(@NonNull String artistName,
+                 @NonNull String artworkUrl60,
                  @NonNull String collectionExplicitness,
                  @NonNull String collectionId,
                  @NonNull String collectionName,
@@ -44,6 +48,7 @@ public final class Album implements Parcelable {
                  @NonNull String releaseDate,
                  int trackCount) {
         this.artistName = artistName;
+        this.artworkUrl60 = artworkUrl60;
         this.collectionExplicitness = collectionExplicitness;
         this.collectionId = collectionId;
         this.collectionName = collectionName;
@@ -56,6 +61,7 @@ public final class Album implements Parcelable {
 
     private Album(@NonNull Parcel parcel) {
         artistName = parcel.readString();
+        artworkUrl60 = parcel.readString();
         collectionExplicitness = parcel.readString();
         collectionId = parcel.readString();
         collectionName = parcel.readString();
@@ -65,9 +71,10 @@ public final class Album implements Parcelable {
         releaseDate = parcel.readString();
         trackCount = parcel.readInt();
 
-        // The type is guaranteed to be ArrayList<Track>
-        // noinspection unchecked
-        tracks = parcel.readArrayList(null);
+        tracks = new ArrayList<>();
+        parcel.readTypedList(tracks, Track.CREATOR);
+
+        artwork = null;
     }
 
     @Override
@@ -79,6 +86,7 @@ public final class Album implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest,
                               int flags) {
         dest.writeString(artistName);
+        dest.writeString(artworkUrl60);
         dest.writeString(collectionExplicitness);
         dest.writeString(collectionId);
         dest.writeString(collectionName);
@@ -87,7 +95,7 @@ public final class Album implements Parcelable {
         dest.writeString(primaryGenreName);
         dest.writeString(releaseDate);
         dest.writeInt(trackCount);
-        dest.writeList(tracks);
+        dest.writeTypedList(tracks);
     }
 
 }

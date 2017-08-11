@@ -1,6 +1,8 @@
 package coop.nisc.intern2016.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import coop.nisc.intern2016.R;
@@ -31,6 +34,8 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
     private static final String STATE_LOOKING = "looking";
     private static final String STATE_ACTION_MODE = "actionMode";
     private static final String STATE_QUERY = "query";
+    private static final String STATE_SEARCH_CURSOR_START = "searchCursorStart";
+    private static final String STATE_SEARCH_CURSOR_END = "searchCursorEnd";
 
     private ActionMode actionMode;
     private AlbumListFragment albumListFragment;
@@ -38,6 +43,8 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
     private SearchTask searchTask;
     private LookupTask lookupTask;
     private String query = "";
+    private int searchCursorStart;
+    private int searchCursorEnd;
     private boolean inActionMode;
     private boolean searching;
     private boolean looking;
@@ -51,6 +58,8 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
             looking = savedInstanceState.getBoolean(STATE_LOOKING);
             inActionMode = savedInstanceState.getBoolean(STATE_ACTION_MODE);
             query = savedInstanceState.getString(STATE_QUERY, query);
+            searchCursorStart = savedInstanceState.getInt(STATE_SEARCH_CURSOR_START);
+            searchCursorEnd = savedInstanceState.getInt(STATE_SEARCH_CURSOR_END);
         }
         findViewById(R.id.fragment_container).setOnClickListener(v -> exitActionMode());
     }
@@ -61,8 +70,12 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         registerFragments();
         if (searching) {
             executeSearch();
-        } else if (looking && albumDetailsFragment != null) {
-            executeLookup(albumDetailsFragment.album);
+        } else if (albumDetailsFragment != null) {
+            Album album = albumDetailsFragment.album;
+            if (looking) {
+                executeLookup(album);
+            }
+            getAlbumArtwork(album);
         }
         if (albumListFragment != null) {
             albumListFragment.setAlbumSelectedCallback(this);
@@ -115,6 +128,8 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         outState.putBoolean(STATE_LOOKING, looking);
         outState.putBoolean(STATE_ACTION_MODE, inActionMode);
         outState.putString(STATE_QUERY, query);
+        outState.putInt(STATE_SEARCH_CURSOR_START, query.length());
+        outState.putInt(STATE_SEARCH_CURSOR_END, query.length());
     }
 
     @Override
@@ -128,6 +143,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
                                       Menu menu) {
         mode.setCustomView(setupToolbarSearchText());
         getMenuInflater().inflate(R.menu.search, menu);
+        setSoftKeyboardShown(this, true);
         inActionMode = true;
         return true;
     }
@@ -153,6 +169,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         query = ((EditText) mode.getCustomView()).getText().toString();
+        setSoftKeyboardShown(this, false);
         inActionMode = false;
     }
 
@@ -170,13 +187,37 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
             return false;
         });
         toolbarSearchText.setText(query);
+        toolbarSearchText.requestFocus();
+        toolbarSearchText.setSelection(searchCursorStart, searchCursorEnd);
+
+        setSoftKeyboardShown(this, true);
         return toolbarSearchText;
+    }
+
+    private void getAlbumArtwork(Album album) {
+        if (album.artwork == null) {
+            new GetAlbumArtTask().execute(album);
+        }
     }
 
     private void registerFragments() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         albumListFragment = (AlbumListFragment) fragmentManager.findFragmentByTag(AlbumListFragment.TAG);
         albumDetailsFragment = (AlbumDetailsFragment) fragmentManager.findFragmentByTag(AlbumDetailsFragment.TAG);
+    }
+
+    private void setSoftKeyboardShown(Activity activity,
+                                      boolean shown) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            view = new View(activity);
+        }
+        if (shown) {
+            imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
+        } else {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     private void performSearch() {
@@ -186,6 +227,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         executeSearch();
         actionMode.finish();
         hideNoResultsView();
+        query = "";
     }
 
     private void executeSearch() {
@@ -201,6 +243,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
         if (!(album.tracks != null && album.tracks.size() > 0)) {
             executeLookup(album);
         }
+        getAlbumArtwork(album);
     }
 
     private void executeLookup(@NonNull Album album) {
@@ -265,6 +308,29 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
             searching = false;
         }
 
+    }
+
+    private final class GetAlbumArtTask extends AsyncTask<Album, Void, Bitmap> {
+
+        private static final String TAG = "GetAlbumArtTask";
+
+        @Override
+        protected Bitmap doInBackground(Album... params) {
+            Album album = params[0];
+            try {
+                return MusicNetworkCall.downloadAlbumArt(album.artworkUrl60);
+            } catch (MusicNetworkCall.unsuccessfulResponseException e) {
+                Log.e(TAG, "Error while getting albums " + e.getLocalizedMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            registerFragments();
+            albumDetailsFragment.setArtwork(bitmap);
+        }
     }
 
     private final class LookupTask extends AsyncTask<Album, Void, ArrayList<Track>> {

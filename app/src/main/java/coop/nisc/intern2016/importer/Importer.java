@@ -22,6 +22,7 @@ public final class Importer {
 
     // Album keys
     private static final String ALBUM = "Album";
+    private static final String ARTWORK_URL_60 = "artworkUrl60";
     private static final String COLLECTION_EXPLICITNESS = "collectionExplicitness";
     private static final String COLLECTION_ID = "collectionId";
     private static final String COLLECTION_PRICE = "collectionPrice";
@@ -54,6 +55,7 @@ public final class Importer {
                 final JSONObject album = jsonArray.getJSONObject(index);
                 if (ALBUM.equals(album.optString(COLLECTION_TYPE))) {
                     albums.add(new Album(album.optString(ARTIST_NAME),
+                                         album.optString(ARTWORK_URL_60),
                                          album.getString(COLLECTION_EXPLICITNESS),
                                          album.optString(COLLECTION_ID),
                                          album.optString(COLLECTION_NAME),

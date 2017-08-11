@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import coop.nisc.intern2016.R;
 import coop.nisc.intern2016.model.Album;
@@ -42,6 +43,11 @@ final class AlbumDetailViewController {
                         album.trackCount,
                         getYear(album.releaseDate),
                         album.trackCount));
+
+        if (album.artwork != null) {
+            ((ImageView) view.findViewById(R.id.album_detail_artwork))
+                    .setImageBitmap(album.artwork);
+        }
 
         View loadingIndicator = view.findViewById(R.id.loading_indicator);
         View noResults = view.findViewById(R.id.no_track_results);

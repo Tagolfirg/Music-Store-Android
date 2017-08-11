@@ -1,5 +1,6 @@
 package coop.nisc.intern2016.ui;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -93,6 +94,11 @@ public final class AlbumDetailsFragment extends Fragment {
                    @Nullable ArrayList<Track> tracks) {
         album.tracks = tracks;
         setupTracksViews(root);
+    }
+
+    void setArtwork(Bitmap bitmap) {
+        album.artwork = bitmap;
+        setupTracksViews(null);
     }
 
     private void setupTracksViews(@Nullable View root) {

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import coop.nisc.intern2016.R;
@@ -27,6 +28,8 @@ public final class AlbumListFragment extends ListFragment {
 
     private ArrayList<Album> albums;
     private AlbumSelectedCallback albumSelectedCallback;
+
+    private ImageView albumArtwork;
 
     String emptyText;
 
@@ -99,6 +102,10 @@ public final class AlbumListFragment extends ListFragment {
     public void setAlbums(@NonNull ArrayList<Album> albums) {
         this.albums = albums;
         setListAdapter(new AlbumAdapter(getContext(), albums));
+    }
+
+    public void updateAlbumArtwork() {
+
     }
 
     private static final class AlbumAdapter extends ArrayAdapter<Album> {
