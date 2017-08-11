@@ -1,7 +1,6 @@
 package coop.nisc.intern2016.ui;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +74,6 @@ final class AlbumDetailViewController {
         ArrayList<View> views = new ArrayList<>();
         for (Track track : tracks) {
             final View trackView = LayoutInflater.from(context).inflate(R.layout.list_item_track, parent, false);
-            configureTrackNumberWidth(trackView, tracks.size());
             trackView.setOnClickListener(view -> {
                 if (listener != null) {
                     listener.onClick(track);
@@ -85,22 +83,6 @@ final class AlbumDetailViewController {
             views.add(trackView);
         }
         return views;
-    }
-
-    private void configureTrackNumberWidth(@NonNull View view,
-                                           int trackCount) {
-        ViewGroup.LayoutParams params = view.findViewById(R.id.track_list_track_number).getLayoutParams();
-        Resources resources = context.getResources();
-        switch (String.valueOf(trackCount).length()) {
-            case 1:
-                params.width = (int) resources.getDimension(R.dimen.one_digit_number);
-                return;
-            case 2:
-                params.width = (int) resources.getDimension(R.dimen.two_digit_number);
-                return;
-            case 3:
-                params.width = (int) resources.getDimension(R.dimen.three_digit_number);
-        }
     }
 
     void setOnClickListener(OnClickListener listener) {

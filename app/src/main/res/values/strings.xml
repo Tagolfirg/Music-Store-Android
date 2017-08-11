@@ -28,6 +28,5 @@
     <string name="album_search_hint">Search for albums…</string>
     <string name="no_results">No results to show.\nTry searching for albums!</string>
     <string name="no_track_results">Failed to load tracks</string>
-    <string name="loading_indicator">Loading Indicator</string>
 
 </resources>

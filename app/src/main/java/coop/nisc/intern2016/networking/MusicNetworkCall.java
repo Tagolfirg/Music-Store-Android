@@ -17,23 +17,39 @@ public final class MusicNetworkCall {
     }
 
     @NonNull
-    public static String downloadUrl(@NonNull String address) throws IOException {
+    public static String downloadUrl(@NonNull String address) throws unsuccessfulResponseException {
 
         OkHttpClient client = new OkHttpClient();
-        Request.Builder requestBuilder = new Request.Builder()
-                .url(address);
+        Request request = new Request.Builder().url(address).build();
+        try {
+            Response response = client.newCall(request).execute();
 
-        Request request = requestBuilder.build();
-        Response response = client.newCall(request).execute();
-        if (response.isSuccessful()) {
-            //body is non-null is the response is successful
-            //noinspection ConstantConditions
-            String responseString = response.body().string();
-            Log.v(TAG, "Network call being sent to " + address + " was successful");
-            return responseString;
-        } else {
-            Log.e(TAG, "Network call being sent to " + address + " was unsuccessful");
-            throw new IOException("Got response code " + response.code());
+            if (response.isSuccessful()) {
+                //body is non-null if the response is successful
+                //noinspection ConstantConditions
+                String responseString = response.body().string();
+                Log.v(TAG, "Network call being sent to " + address + " was successful");
+                return responseString;
+            } else {
+                Log.e(TAG, "Network call being sent to " + address + " was unsuccessful");
+                throw new unsuccessfulResponseException("Got response code " + response.code());
+            }
+        } catch (IOException e) {
+            throw new unsuccessfulResponseException("Unable to download URL");
+        }
+    }
+
+    public static final class unsuccessfulResponseException extends RuntimeException {
+
+        private final String localizedMessage;
+
+        unsuccessfulResponseException(String localizedMessage) {
+            this.localizedMessage = localizedMessage;
+        }
+
+        @Override
+        public String getLocalizedMessage() {
+            return localizedMessage;
         }
     }
 

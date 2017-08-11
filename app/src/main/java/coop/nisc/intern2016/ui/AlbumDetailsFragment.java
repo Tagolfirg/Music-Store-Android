@@ -93,7 +93,6 @@ public final class AlbumDetailsFragment extends Fragment {
                    @Nullable ArrayList<Track> tracks) {
         album.tracks = tracks;
         setupTracksViews(root);
-
     }
 
     private void setupTracksViews(@Nullable View root) {

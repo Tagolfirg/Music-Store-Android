@@ -22,7 +22,6 @@ import coop.nisc.intern2016.model.MusicUrl;
 import coop.nisc.intern2016.model.Track;
 import coop.nisc.intern2016.networking.MusicNetworkCall;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public final class MainActivity extends AppCompatActivity implements ActionMode.Callback,
@@ -252,7 +251,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
             try {
                 return Importer.importAlbums(MusicNetworkCall.downloadUrl(new MusicUrl(query,
                                                                                        MusicUrl.ALBUM).toString()));
-            } catch (IOException exception) {
+            } catch (MusicNetworkCall.unsuccessfulResponseException exception) {
                 Log.e(TAG, "doInBackground: Error while getting albums " + exception.getLocalizedMessage());
                 setEmptyText(exception.getLocalizedMessage());
                 return new ArrayList<>();
@@ -289,7 +288,7 @@ public final class MainActivity extends AppCompatActivity implements ActionMode.
                 tracks = Importer.importTracks(MusicNetworkCall.downloadUrl(
                         new MusicUrl(String.valueOf(album.collectionId), MusicUrl.SONG).toString()));
                 album.tracks = tracks;
-            } catch (IOException exception) {
+            } catch (MusicNetworkCall.unsuccessfulResponseException exception) {
                 Log.e(TAG, "doInBackground: Error while getting tracks " + exception.getLocalizedMessage());
             }
             return tracks;
